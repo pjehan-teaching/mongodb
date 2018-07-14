@@ -1,0 +1,201 @@
+<section id="crud">
+
+    <section>
+        <h2>CRUD</h2>
+    </section>
+
+    <section>
+        <h3>Insérer (Create)</h3>
+        <p>L'insertion se fait grâce à la fonction <code class="language-bash">insertOne()</code>. La variable <code class="language-bash">db</code> fait toujours référence à la base de données en cours.</p>
+        <pre><code class="language-bash">> db.stations.insertOne({ "name": "Charles de Gaulle", "position": [ -1.677119338, 48.10511105 ] })</code></pre>
+        <p>Ici, nous venons d'insérer un nouveau <strong>Document</strong> dans la <strong>Collection</strong> "stations" de la base de données en cours (citybike).</p>
+
+        <footer>
+            <a href="https://docs.mongodb.com/manual/geospatial-queries" class="warning" style="font-size: 0.8em" target="_blank">Les objets GeoJSON doivent stocker la longitude puis la latitude</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>ObjectId</h3>
+        <p>Lors de l'insertion, si le champ <code class="language-bash">_id</code> n'est pas renseigné, il est alors créé automatiquement.</p>
+        <p>MongoDB va alors créer un <a href="https://docs.mongodb.com/manual/reference/bson-types/#objectid" target="_blank">ObjectId</a> qui est un type de donnée spécifique à BSON.</p>
+        <p>Cette donnée est générée à partir de la date, l'adresse MAC, le process ID ainsi qu'un compteur auto-incrémenté.</p>
+    </section>
+
+    <section>
+        <h3>Insertions multiples</h3>
+        <p>Vous pouvez également insérer plusieurs Documents dans une Collection avec la fonction <a href="https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/" target="_blank">insertMany()</a></p>
+        <div class="instructions">
+            <div class="instructions-content">
+                <ol>
+                    <li>
+                        Insérez les données suivantes dans la Collection "stations" :
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Station</th>
+                                    <th>Géolocalisation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>République</td>
+                                    <td>Latitude : 48.1100259201<br>Longitude : -1.6780371631</td>
+                                </tr>
+                                <tr>
+                                    <td>Alma</td>
+                                    <td>Latitude : 48.0841016<br>Longitude : -1.6788926</td>
+                                </tr>
+                                <tr>
+                                    <td>La Poterie</td>
+                                    <td>Latitude : 48.08727692<br>Longitude : -1.644125895</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Rechercher (Read)</h3>
+        <p>La fonction <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find" target="_blank">find()</a> permet d'effectuer une recherche dans une Collection.</p>
+        <pre><code class="language-bash">> db.stations.find()</code></pre>
+        <p>Cette commande retourne l'ensemble des Documents contenus dans la Collection "stations" mais il est également possible de filtrer les résultats.</p>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/method/cursor.pretty" class="info" style="font-size: 0.8em" target="_blank">La fonction pretty() permet de formater les résultats de la recherche</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Rechercher (Read)</h3>
+        <p>Il est possible d'affiner les résultats de la recherche en passant en paramètre un Document définissant les contraintes à respecter lors de la recherche.</p>
+<pre><code class="language-bash">> db.stations.find({ "name": "Alma" })
+> db.stations.find({ "position.1": { $gte: 48.1 } })
+</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/operator/query" class="info" style="font-size: 0.8em" target="_blank">Liste des opérateurs pour les recherches</a>
+        </footer>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/tutorial/iterate-a-cursor" class="warning" style="font-size: 0.8em" target="_blank">La fonction find() ne retourne pas un tableau mais un curseur</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Curseur</h3>
+        <p>Pour pouvoir parcourir les résultats retournés par le fonction <code class="language-bash">find()</code>, il est possible d'utiliser la fonction <code class="language-bash">toArray()</code>.</p>
+        <p>Cependant, cela signifie que MongoDB devra attendre d'avoir récupéré l'ensemble des Documents qui seront chargés en RAM avant de pouvoir les parcourir.</p>
+        <p>L'utilisation d'un curseur permet de récupérer les Documents par lots (batch) et de les traiter progressivement.</p>
+<pre><code class="language-bash">> var cursor = db.stations.find()
+> cursor.hasNext()
+> cursor.next()
+</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/method/js-cursor" class="info" target="_blank">Liste des methodes liées au curseur</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Modifier (Update)</h3>
+        <p>MongoDB propose 3 commandes différentes pour effectuer une modification :</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Fonction</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>updateOne()</td>
+                <td>Modifier le premier Document correspondant à la requête</td>
+            </tr>
+            <tr>
+                <td>updateMany()</td>
+                <td>Modifier l'ensemble des Documents correspondant à la requête</td>
+            </tr>
+            <tr>
+                <td>replaceOne()</td>
+                <td>Remplacer le premier Document correspondant à la requête</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>Opérateurs de modification</h3>
+        <p>Il est possible d'utiliser des opérateurs de modification pour faciliter certaines tâches récurrentes (date actuelle, incrémentation, insertion dans un tableau...).</p>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/operator/update" class="info" target="_blank">Liste des opérateurs pour les mises à jour</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>updateOne()</h3>
+        <p>Modifier le premier Document correspondant à la requête</p>
+<pre><code class="language-bash">> db.stations.updateOne({ name: "Alma" }, { $set: { bikesAvailable: 6 } })
+> db.stations.updateOne({ name: "Alma" }, { $inc: { bikesAvailable: 2 } })
+</code></pre>
+    </section>
+
+    <section>
+        <h3>updateMany()</h3>
+        <p>Modifier l'ensemble des Documents correspondant à la requête</p>
+<pre><code class="language-bash">> db.stations.updateMany({ }, { $set: { bikesAvailable: 0 } })
+> db.stations.updateMany({ }, { $set: { reviews: [] } })
+> db.stations.updateOne({ _id: ObjectId("5ad60f79121c1438184fe2cf") }, { $push: { reviews: { rating: 4, date: new Date, user: "pjehan", content: "Super cette station !" } } })
+</code></pre>
+    </section>
+
+    <section>
+        <h3>replaceOne()</h3>
+        <p>Remplacer le premier Document correspondant à la requête</p>
+        <pre><code class="language-bash">> db.stations.replaceOne({ name: "Alma" }, { name: "Alma", bikesAvailable: 3 })</code></pre>
+    </section>
+
+    <section>
+        <h3>Upsert</h3>
+        <p>Upsert permet de mettre à jour un Document mais si ce dernier n'existe pas, il sera alors créé.</p>
+        <pre><code class="language-bash">> db.stations.updateOne({ name: "Alma" }, { $set: { name: "Alma", bikesAvailable: 0 } }, { upsert: true })</code></pre>
+        <footer>
+            <a href="#" class="info">Si la station "Alma" n'existe pas, elle sera créée</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Supprimer (Delete)</h3>
+        <p>MongoDB propose 2 commandes différentes pour effectuer une suppression :</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Fonction</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>deleteOne()</td>
+                <td>Supprimer le premier Document correspondant à la requête</td>
+            </tr>
+            <tr>
+                <td>deleteMany()</td>
+                <td>Supprimer l'ensemble des Documents correspondant à la requête</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>deleteOne()</h3>
+        <p>Supprimer le premier Document correspondant à la requête</p>
+        <pre><code class="language-bash">> db.stations.deleteOne({ name: "Alma" })</code></pre>
+    </section>
+
+    <section>
+        <h3>deleteMany()</h3>
+        <p>Supprimer l'ensemble des Documents correspondant à la requête</p>
+        <pre><code class="language-bash">> db.stations.deleteMany({ })</code></pre>
+    </section>
+
+</section>

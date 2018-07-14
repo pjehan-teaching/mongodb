@@ -1,0 +1,268 @@
+<section id="performances">
+
+    <section>
+        <h2>Performances</h2>
+    </section>
+
+    <section>
+        <h3>Préparation</h3>
+        <p>Afin de pouvoir tester les performances de nos requêtes, nous allons avoir besoin d'une base de données contenant énormément de Documents.</p>
+        <div class="instructions">
+            <div class="instructions-content">
+                <ol>
+                    <li>Téléchargez la Collection "Stock" depuis ce <a href="https://github.com/ozlerhakan/mongodb-json-files" target="_blank">repository Github</a></li>
+                    <li>
+                        Dézippez le fichier puis importez la base de données en utilisant la commande suivante :<br>
+                        <pre><code class="language-bash">mongorestore stocks/values.bson</code></pre>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Moteur de stockage</h3>
+        <div class="container">
+            <div class="col">
+                <p>Un moteur de storage est une interface entre le matériel de stockage (disque dur) et la base de données (MongoDB).</p>
+                <p>Il permet d'optimiser les traitements des données en stockant des informations sur la mémoire vive.</p>
+            </div>
+            <img src="assets/images/storage-engine.png" alt="MongoDB Storage Engine">
+        </div>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/core/storage-engines" class="info">MongoDB Storage Engines</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Moteur de stockage</h3>
+        <p>Il existe 2 moteurs de stockage pour MongodDB</p>
+        <div class="container">
+            <div class="col">
+                <h4>MMAP</h4>
+                <ul>
+                    <li>Par défaut avant la version 3.2 de MongoDB</li>
+                    <li>Collection level concurrency</li>
+                    <li>In place update</li>
+                </ul>
+            </div>
+            <div class="col">
+                <h4>WiredTiger</h4>
+                <ul>
+                    <li>Par défaut depuis MongoDB 3.2
+                    <li>Document level concurrency (optimistic)</li>
+                    <li>No in place update</li>
+                    <li>Compression des données et des index</li>
+                </ul>
+            </div>
+        </div>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/core/inmemory" class="info">Il existe également un autre moteur de stockage "In memory"</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Explain</h3>
+        <p>La methode <code class="language-bash">explain()</code> permet d'afficher les détails d'execution d'une requête.</p>
+        <pre><code class="language-bash">> var exp = db.persons.explain()
+> exp.help()
+> exp.find({ firstname: "Pierre" })
+</code></pre>
+        <p>Il est possible d'afficher plus d'informations en passant à la méthode <code class="language-bash">explain()</code> le paramètre "executionStats" ou "allPlansExecution"</p>
+    </section>
+
+    <section>
+        <h3>Index</h3>
+        <p>Les index créés en mémoire des tableaux parallèles permettant d'optimiser les recherches en organisant les données sous forme d'arbre (B-tree).</p>
+        <img src="assets/images/index.png" alt="MongoDB Index">
+        <footer>
+            <a href="#" style="font-size: 0.8em" class="danger">Les index entraînent des ralentissements sur les opérations d'écriture</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Index</h3>
+        <p>La commande ci-dessous permet de créer un index dans l'ordre croissant sur le champ "firstname" sur l'ensemble des Documents de la Collection "person" :</p>
+        <pre><code class="language-bash">> db.persons.createIndex({ firstname: 1 })</code></pre>
+        <p>La commande ci-dessous permet de créer un index sur le champs "firstname" dans l'ordre croissant et sur le champ "lastname" dans l'ordre décroissant :</p>
+        <pre><code class="language-bash">> db.persons.createIndex({ firstname: 1, lastname: -1 })</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/core/index-multikey/#limitations" style="font-size: 0.8em" class="danger" target="_blank">Il n'est pas possible de créer un index sur deux champs de type array !</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Index</h3>
+        <div class="instructions">
+            <div class="instructions-content">
+                <ol>
+                    <li>Positionnez-vous sur la base de données "stock" et recherchez l'ensemble des Documents sur le marché "NASDAQ" pour l'entreprise Microsoft ("MSFT") sur le mois de janvier 2008</li>
+                    <li>Examinez le temps d'execution de cette requête en utilisant la fonction <code class="language-bash">.explain("executionStats")</code></li>
+                    <li>Créez le ou les index nécessaires et vérifiez à nouveau le temps d'execution</li>
+                    <li>Projetez uniquement les informations nécessaires et vérifiez à nouveau le temps d'execution (Covered Query)</li>
+                </ol>
+            </div>
+        </div>
+        <footer>
+            <a href="#" style="font-size: 0.8em" class="warning">La création d'index sur une Collection volumineuse peut prendre du temps !</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Index</h3>
+        <p>Vous pouvez lister les index d'une Collection avec la commande suivante :</p>
+        <pre><code class="language-bash">> db.persons.getIndexes()</code></pre>
+        <p>Vous pouvez supprimer un index d'une Collection avec la commande suivante :</p>
+        <pre><code class="language-bash">> db.persons.dropIndex({ firstname: 1 })</code></pre>
+    </section>
+
+    <section>
+        <h3>Index</h3>
+        <p>Vous pouvez créer un index unique avec la commande suivante :</p>
+        <pre><code class="language-bash">> db.persons.createIndex({ firstname: 1 }, { unique: true })</code></pre>
+        <p>L'option <code class="language-bash">sparse</code> permet de ne pas prendre en compte les champs vides avec la commande suivante :</p>
+        <pre><code class="language-bash">> db.persons.createIndex({ firstname: 1 }, { unique: true, sparse: true })</code></pre>
+    </section>
+
+    <section>
+        <h3>Index</h3>
+        <p>Vous pouvez choisir de créer un index en foreground (defaut) ou background.</p>
+        <div class="container">
+            <div class="col">
+                <h4>Foreground</h4>
+                <ul>
+                    <li>Rapide</li>
+                    <li>Bloque en lecture / écriture la base de données</li>
+                    <li>A utiliser en dev</li>
+                </ul>
+            </div>
+            <div class="col">
+                <h4>Background</h4>
+                <ul>
+                    <li>Lent</li>
+                    <li>Ne bloque pas la base de données</li>
+                    <li>A utiliser en prod</li>
+                </ul>
+            </div>
+        </div>
+        <pre><code class="language-bash">> db.persons.createIndex({ firstname: 1 }, { background: true })</code></pre>
+    </section>
+
+    <section>
+        <h3>Text Index</h3>
+        <p>Il est possible de créer des index pour permettre des recherches avancées dans les champs de type Text :</p>
+<pre><code class="language-bash">> db.persons.find({ bio: "guitare" })
+> db.persons.createIndex({ bio: 'text' })
+> db.persons.find({ bio: "guitare" })
+> db.persons.find({ $text: { $search: "guitare" } })
+> db.persons.find({ $text: { $search: "guitare" } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
+</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/text-search" class="info" target="_blank">MongoDB Text Search</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Geospacial Index</h3>
+        <p>Il est possible de créer des index pour permettre des recherches sur des coordonnées (latitude, longitude).</p>
+        <p>Pour stocker des coordonnées dans une base de données MongoDB, il est préférable de respecter la normalisation GeoJSON :</p>
+<pre><code class="json" data-trim>"geometry": {
+    "type": "Point",
+    "coordinates": [125.6, 10.1]
+}
+</code></pre>
+<pre><code class="language-bash">> db.persons.find({ location.coordinates: { $near: [-1.68, 48.12] } })
+> db.persons.createIndex({ location: '2dsphere' })
+> db.persons.find({ location: { $near: { $geometry: { type: "Point", coordinates: [-1.68, 48.12] } } } })
+</code></pre>
+        <footer>
+            <a href="http://geojson.org" class="info" target="_blank">GeoJSON specs</a>
+            <a href="https://docs.mongodb.com/manual/geospatial-queries" class="info" target="_blank">MongoDB Geospatial Queries</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Geospacial Index</h3>
+        <div class="instructions">
+            <div class="instructions-content">
+                <ol>
+                    <li>Ajouter un index geospacial sur le champ contenant la géolocalisation des stations de vélos</li>
+                    <li>Recherher la liste des stations dans un rayon de 1km autour de [-1.647305, 48.134604] (Gayeulles Piscine et ZA Saint-Sulpice)</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Profiler</h3>
+        <div class="container">
+            <div class="col">
+                <p>Le profiler permet d'inspecter l'execution des requêtes sur une base de données. Il peut être activé en spécifiant le niveau à utiliser.</p>
+            </div>
+            <div class="col">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Niveau</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>Off</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Requêtes lentes</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Toutes les requêtes</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<pre><code class="language-bash">mongod --profile 1 --slowms 2
+> db.system.profile.find().pretty()
+</code></pre>
+        <p>Le paramètre <code class="language-bash">--slowms 2</code> permet de logger toutes les requêtes ayant un temps d'execution supérieur à 2ms.</p>
+    </section>
+
+    <section>
+        <h3>mongotop</h3>
+        <p>mongotop permet d'afficher les temps passés par MongoDB en lecture / écriture sur les différentes Collections d'une base de données.</p>
+        <pre><code class="language-bash">mongotop</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/program/mongotop" class="info" target="_blank">MongoDB mongotop program</a>
+        </footer>
+    </section>
+
+
+    <section>
+        <h3>mongostat</h3>
+        <p>mongostat permet d'afficher le nombre d'opérations (insert, update...) executés sur une instance de MongoDB chaque seconde.</p>
+        <pre><code class="language-bash">mongostat</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/program/mongostat" class="info" target="_blank">MongoDB mongostat program</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Sharding</h3>
+        <div class="container">
+            <div class="col" style="font-size: 0.9em">
+                <ul>
+                    <li>Sharding est une architecture permettant de <strong>répartir les données</strong> sur plusieurs machines.</li>
+                    <li>Plusieurs machines peuvent être groupées pour mettre en place un système de <strong>réplication des données</strong> (Replica Set).</li>
+                    <li>Le programme <code class="language-bash">mongos</code> permet de fonctionner comme un <strong>routeur</strong> pour rediriger les requêtes vers le bon Replica Set.</li>
+                </ul>
+            </div>
+            <div class="col">
+                <img src="assets/images/sharding.png" alt="MongoDB Sharding">
+            </div>
+        </div>
+    </section>
+
+</section>

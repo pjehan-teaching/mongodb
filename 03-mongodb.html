@@ -1,0 +1,101 @@
+<section id="mongodb">
+
+    <section>
+        <h2>Qu'est-ce que MongoDB ?</h2>
+    </section>
+
+    <section>
+        <h3>Ses avantages...</h3>
+        <ul>
+            <li class="fragment fade-left"><strong>Gratuit</strong> et <strong>Open Source</strong></li>
+            <li class="fragment fade-left">Ecrit en <strong>C++</strong></li>
+            <li class="fragment fade-left">Stockage des données sous forme de <strong>Documents</strong> similaires au format <strong>JSON</strong></li>
+            <li class="fragment fade-left">Les données sont <strong>flexibles</strong> et la <strong>structure des données</strong> peut varier entre les documents mais également <strong>dans le temps</strong></li>
+            <li class="fragment fade-left">Les Documents <strong>correspondent aux informations utilisées dans les applications</strong> ce qui permet de simplifier leur utilisation</li>
+            <li class="fragment fade-left"><strong>Scalable</strong> avec la possibilité de répartir les données sur plusieurs machines (horizontal scaling)</li>
+            <li class="fragment fade-left">Requêtes avec <strong>variables</strong>, <strong>indexation</strong>, <strong>aggrégation</strong> de données...</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Scaling up VS Scaling down</h3>
+        <article class="container">
+            <div class="col scaling-up">
+                <h4>Scaling Up</h4>
+                <i class="fa fa-server"></i>
+            </div>
+            <div class="col scaling-down">
+                <h4>Scaling Down</h4>
+                <div class="scaling-down-container">
+                    <i class="fa fa-server"></i>
+                    <i class="fa fa-server"></i>
+                    <i class="fa fa-server"></i>
+                    <i class="fa fa-server"></i>
+                    <i class="fa fa-server"></i>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section>
+        <h3>SGBDR VS Document</h3>
+        <article class="container">
+            <div class="col">
+                <h4>SGBDR</h4>
+                <p>Se focalise sur le <strong>stockage des données</strong></p>
+            </div>
+            <div class="col">
+                <h4>Document</h4>
+                <p>Se focalise sur <strong>l'utilisation des données</strong></p>
+            </div>
+        </article>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/sql-comparison" class="info" target="_blank">SQL to MongoDB</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>... et ses inconvénients</h3>
+        <ul>
+            <li class="fragment fade-left">Respecte le principe <strong>ACID</strong> (Atomic, Consistent, Isolated, Durable) mais <strong>uniquement au niveau d'un Document</strong></li>
+            <li class="fragment fade-left">Pas de <strong>transaction</strong> (il est cependant possible de s'en approcher en utilisant le système de <a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/" target="_blank">Two Phase Commits</a>)</li>
+            <li class="fragment fade-left">Pas de Foreign Keys et donc d'<strong>intégrité référentielle</strong></li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Versions</h3>
+        <table>
+            <thead>
+            <tr>
+                <td>Release</td>
+                <td>Release Date</td>
+                <td>End of Life Date</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><p>MongoDB 1.0</p></td>
+                <td><p>February 2009</p></td>
+                <td><p>August 2010</p></td>
+            </tr>
+            <tr>
+                <td><p>MongoDB 2.0</p></td>
+                <td><p>September 2011</p></td>
+                <td><p>March 2013</p></td>
+            </tr>
+            <tr>
+                <td><p>MongoDB 3.0</p></td>
+                <td><p>March 2015</p></td>
+                <td><p>February 2018</p></td>
+            </tr>
+            <tr>
+                <td><p>MongoDB 3.6</p></td>
+                <td><p>November 2017</p></td>
+                <td><p>TBD</p></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+</section>

@@ -1,0 +1,319 @@
+<section id="schema-design">
+
+    <section>
+        <h2>Organisation des données</h2>
+    </section>
+
+    <section>
+        <h3>Particularités</h3>
+        <ul>
+            <li>Embed data (nested Document) permet d'éviter les jointures</li>
+            <li>Il n'est pas possible de faire des jointures</li>
+            <li>Il n'y a pas de contraintes d'intégrité référentielle</li>
+            <li>Supporte partiellement le principe ACID (au niveau d'un Document)</li>
+            <li>Pas de diagramme figé</li>
+            <li>La structure des données dois être le plus proche possible des requêtes qui seront effectuée par l'application</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>3rd Normal Form (3NF)</h3>
+        <p>3NF est utilisé pour normaliser des bases de données en évitant de dupliquer des données et en assurant la cohérence des données.</p>
+        <table>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>content</th>
+                <th>author</th>
+                <th>author_email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>Titre 1</td>
+                <td>Contenu 1</td>
+                <td style="background-color: crimson; color: white;">pjehan</td>
+                <td style="background-color: crimson; color: white;">pierre.jehan@gmail.com</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Titre 2</td>
+                <td>Contenu 2</td>
+                <td>jdupont</td>
+                <td>jdupont@gmail.com</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Titre 3</td>
+                <td>Contenu 3</td>
+                <td style="background-color: crimson; color: white;">pjehan</td>
+                <td style="background-color: crimson; color: white;">pierre.jehan@gmail.com</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>3rd Normal Form (3NF)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>content</th>
+                <th>author_id</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>Titre 1</td>
+                <td>Contenu 1</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Titre 2</td>
+                <td>Contenu 2</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Titre 3</td>
+                <td>Contenu 3</td>
+                <td>1</td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>pjehan</td>
+                <td>pierre.jehan@gmail.com</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>jdupont</td>
+                <td>jdupont.jehan@gmail.com</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>3rd Normal Form (3NF)</h3>
+        <ul>
+            <li>Evite des anomalies lors de la modifications des données</li>
+            <li>Minimalise les changements de la structure des données lorsque la base évolue</li>
+            <li class="fragment highlight-red">Ne s'occupe pas de la façon dont les données seront recherchées</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Pas de contraintes d'intégrité ??</h3>
+        <p>MongoDB ne permet pas actuellement de s'assurer qu'une "clé étrangère" fait bien référence à une "clé primaire" existante.</p>
+        <p>Cependant, ce problème n'existe pas si les Documents sont intégrés (embed) directement les uns dans les autres !</p>
+    </section>
+
+    <section>
+        <h3>Pas de transactions ??</h3>
+        <p>MongoDB ne permet pas d'écrire des transactions afin de s'assurer qu'une suite d'opération se déroule correctement.</p>
+        <p>Si l'ensemble des données à traiter dans une transaction se situent dans un même Document, le problème est résolu.</p>
+    </section>
+
+    <section>
+        <h3>One to one</h3>
+        <ul>
+            <li>Pays - Capitale</li>
+            <li>Employé - CV</li>
+            <li>Client - Compte bancaire</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>One to one</h3>
+        <p>Situation parfaite pour intégrer (embed) les Documents les uns dans les autres. On réalise ici une <strong>dénormalisation</strong> des données.</p>
+<pre><code class="json" data-trim>country {
+    _id: ObjectId("507f191e810c19729de860ea"),
+    name: "France",
+    population: 67000000,
+    capital: { name: "Paris", location: [2.352222, 48.856614] }
+}
+</code></pre>
+        <p>Ou</p>
+<pre><code class="json" data-trim>capital {
+    _id: ObjectId("507f1f77bcf86cd799439011"),
+    name: "Paris",
+    location: [2.352222, 48.856614]
+    country: { name: "France", population: 67000000 }
+}
+</code></pre>
+    </section>
+
+    <section>
+        <h3>One to one</h3>
+        <p>On pourra cependant séparer les données dans 2 Collections différentes dans les situations suivantes :</p>
+        <ul>
+            <li>Accès aux données de la capitale très rare</li>
+            <li>Taille des données du Document capitale très volumineux</li>
+        </ul>
+        <p>L'intégration d'un Document dans un autre permet également d'assurer l'atomicité des données.</p>
+    </section>
+
+    <section>
+        <h3>One to many</h3>
+        <ul>
+            <li>Commande - Moyen de paiement</li>
+            <li>Personne - Ville</li>
+            <li>Produit - Catégorie</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>One to many</h3>
+<pre><code class="json" data-trim>payment_method {
+    _id: ObjectId("507f191e810c19729de860ea"),
+    title: "cash",
+    icon: "fa-euro",
+    orders: [...] <- Trop d'éléments
+}
+</code></pre>
+<pre><code class="json" data-trim>order {
+    _id: ObjectId("507f1f77bcf86cd799439011"),
+    number: "A002541",
+    payment_method: { title: "cash", icon: "fa-euro" } <- Difficile à maintenir à jour en cas d'update
+    created_at: new Date(),
+}
+</code></pre>
+    </section>
+
+    <section>
+        <h3>One to many</h3>
+        <p>Il est préférable dans cette situation de faire un lien entre les documents (normalisation des données).</p>
+<pre><code class="json" data-trim>payment_method {
+    _id: ObjectId("507f191e810c19729de860ea"),
+    title: "cash",
+    icon: "fa-euro"
+}
+</code></pre>
+<pre><code class="json" data-trim>order {
+    _id: ObjectId("507f1f77bcf86cd799439011"),
+    number: "A002541",
+    payment_method: ObjectId("507f191e810c19729de860ea")
+    created_at: new Date(),
+}
+</code></pre>
+    </section>
+
+    <section>
+        <h3>One to few</h3>
+        <ul>
+            <li>Commentaire - Article</li>
+            <li>Personne - Adresse</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>One to few</h3>
+<pre><code class="json" data-trim>post {
+    _id: ObjectId("507f1f77bcf86cd799439011"),
+    title: "Post title",
+    content: "Post content...",
+    comments: [...],
+    created_at: new Date(),
+}
+</code></pre>
+    </section>
+
+    <section>
+        <h3>Many to many</h3>
+        <ul>
+            <li>Livre - Auteur</li>
+            <li>Enseignant - Etudiant</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Many to many</h3>
+<pre><code class="json" data-trim>book {
+    _id: ObjectId("507f191e810c19729de860ea"),
+    title: "Design Patterns",
+    resume: "Capturing a wealth of experience about the design of object-oriented software...",
+    authors: [ObjectId("507f1f77bcf86cd799439011"), ...]
+}
+</code></pre>
+<pre><code class="json" data-trim>author {
+    _id: ObjectId("507f1f77bcf86cd799439011"),
+    firstname: "Erich",
+    lastname: "Gamma",
+    books: [ObjectId("507f191e810c19729de860ea"), ...] <- Optionnel
+}
+</code></pre>
+    </section>
+
+    <section>
+        <h3>Dénormalisation</h3>
+        <div class="instructions">
+            <div class="instructions-content">
+                <ol>
+                    <li>
+                        Effectuez une dénormalisation du diagramme ci-dessous :
+                        <img src="assets/images/heptathlon.png" alt="Heptathlon diagramme">
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Arbre</h3>
+        <div class="instructions">
+            <div class="instructions-content">
+                <ol>
+                    <li>
+                        Quelle structure de données serait la mieux adaptée pour représenter une imbrication entre plusieurs catégories ?
+                        <ul>
+                            <li>
+                                Livre
+                                <ul>
+                                    <li>
+                                        Science
+                                        <ul>
+                                            <li>Chimie</li>
+                                            <li>
+                                                Physique
+                                                <ul>
+                                                    <li>Mécanique des fluides</li>
+                                                    <li>Mécanique quantique</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Validation</h3>
+        <p>Depuis MongoDB 3.2, il est maintenant possible de définir des règles de validation directement au niveau de la base de données.</p>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/core/schema-validation" class="info" target="_blank">Schema Validation</a>
+        </footer>
+    </section>
+
+</section>

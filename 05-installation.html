@@ -1,0 +1,74 @@
+<section id="installation">
+
+    <section>
+        <h2>Installation</h2>
+        <a href="https://docs.mongodb.com/getting-started/shell/installation">Page d'installation</a>
+    </section>
+
+    <section>
+        <h3>Architecture</h3>
+        <img src="assets/images/architecture.jpg" alt="MongoDB Architecture">
+    </section>
+
+    <section>
+        <h3>MAC OS</h3>
+        <pre><code class="language-bash">cd ~/Downloads/
+tar xvf mongodb-osx.tgz
+mkdir /data/db
+chmod -R 777 /data
+cp mongodb-osx/bin/* /usr/local/lib/
+which mongod
+mongod
+</code></pre>
+        <p>Le serveur démarre sur le port par défaut : 27017</p>
+    </section>
+
+    <section>
+        <h3>Windows</h3>
+        <ol>
+            <li>Télécharger et installer le fichier .msi</li>
+            <li>Les fichiers sont installer dans C:\Program Files\MongoDB\Server\3.6\bin\</li>
+            <li>Ajouter ce répertoire dans le PATH (modifiable depuis les variables d'environnement)</li>
+        </ol>
+        <pre><code class="language-bash">md \data
+md \data\db
+mongod
+</code></pre>
+        <p>Le serveur démarre sur le port par défaut : 27017</p>
+    </section>
+
+    <section>
+        <h3>Services</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>mongo</td>
+                    <td>Client JavaScript shell</td>
+                </tr>
+                <tr>
+                    <td>mongod</td>
+                    <td>Serveur</td>
+                </tr>
+                <tr>
+                    <td>mongos</td>
+                    <td>Router (MongoDB Shard)</td>
+                </tr>
+                <tr>
+                    <td>mongostat, mongotop</td>
+                    <td>Outils de monitoring</td>
+                </tr>
+                <tr>
+                    <td>mongodump, mongorestore, mongoexport, mongoimport</td>
+                    <td>Outils d'import export des données</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+</section>

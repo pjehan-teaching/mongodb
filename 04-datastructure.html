@@ -1,0 +1,143 @@
+<section id="data-structure">
+
+    <section>
+        <h2>Structure des données</h2>
+    </section>
+
+    <section>
+        <h3>Databases</h3>
+        <article class="container">
+            <div class="col">
+                <ul>
+                    <li>MongoDB contient une liste de <strong>base de données</strong> (databases)</li>
+                    <li>Chaque base de données contient une liste de <strong>collections</strong></li>
+                    <li>Chaque collection contient une liste de <strong>documents</strong></li>
+                </ul>
+            </div>
+            <div class="col">
+                <img src="assets/images/structure.jpg" alt="MongoDB Structure">
+            </div>
+        </article>
+        <footer>
+            <a href="https://docs.mongodb.com/v3.4/meta/style-guide/#jargon-and-common-terms" class="info" target="_blank">Jargon MongoDB</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Format JSON</h3>
+<pre><code class="json" data-trim>{
+    "_id": "5a4fc1cdae4b2821462e3bde",
+    "title": "Nouvelle version 3.6 de MongoDB",
+    "date": "2018-04-13T16:14:36.408Z",
+    "views": 235,
+    "published": true,
+    "content": "La nouvelle version 3.6 de MongoDB...",
+    "author": {
+        "firstname": "Pierre",
+        "lastname": "Jehan",
+        "pseudo": "pjehan",
+    },
+    "tags": [ "Database", "MongoDB", "NoSQL" ],
+    "comments": [
+        { "pseudo": "francoish", "content": "Super ces nouveautés !" },
+        { "pseudo": "pjehan", "content": "Oui, toujours plus de possibilités !" }
+    ]
+}
+</code></pre>
+    </section>
+
+    <section>
+        <h3>Format JSON</h3>
+        <article class="container">
+            <div class="col">
+                <ul>
+                    <li>Un objet JSON est délimité par des <strong>accolades</strong></li>
+                    <li>Un objet JSON est composé d'une liste de champs sous forme d'associations <strong>clé / valeur</strong></li>
+                    <li>Les champs sont séparés par des <strong>virgules</strong></li>
+                </ul>
+            </div>
+            <div class="col">
+<pre style="width: 400px;"><code class="json" data-trim>{
+    "_id": "5a4fc1cdae4b2821462e3bde",
+    "title": "Nouvelle version 3.6 de MongoDB",
+    "date": "2018-04-13T16:14:36.408Z",
+    "views": 235,
+    "published": true,
+    "content": "La nouvelle version 3.6 de MongoDB...",
+    "author": {
+        "firstname": "Pierre",
+        "lastname": "Jehan",
+        "pseudo": "pjehan",
+    },
+    "tags": [ "Database", "MongoDB", "NoSQL" ],
+    "comments": [
+        { "pseudo": "francoish", "content": "Super ces nouveautés !" },
+        { "pseudo": "pjehan", "content": "Oui, toujours plus de possibilités !" }
+    ]
+}
+</code></pre>
+            </div>
+        </article>
+    </section>
+
+    <section>
+        <h3>Format JSON</h3>
+        <article class="container">
+            <div class="col">
+                <p>Un objet JSON peut contenir des valeurs de type...</p>
+                <ul>
+                    <li>String (chaine de caractères)</li>
+                    <li>Number (nombre)</li>
+                    <li>Array (tableau)</li>
+                    <li>Boolean (booléen)</li>
+                    <li>Object (objet)</li>
+                </ul>
+            </div>
+            <div class="col">
+<pre style="width: 400px;"><code class="json" data-trim>{
+    "_id": "5a4fc1cdae4b2821462e3bde",
+    "title": "Nouvelle version 3.6 de MongoDB",
+    "date": "2018-04-13T16:14:36.408Z",
+    "views": 235,
+    "published": true,
+    "content": "La nouvelle version 3.6 de MongoDB...",
+    "author": {
+        "firstname": "Pierre",
+        "lastname": "Jehan",
+        "pseudo": "pjehan",
+    },
+    "tags": [ "Database", "MongoDB", "NoSQL" ],
+    "comments": [
+        { "pseudo": "francoish", "content": "Super ces nouveautés !" },
+        { "pseudo": "pjehan", "content": "Oui, toujours plus de possibilités !" }
+    ]
+}
+</code></pre>
+            </div>
+        </article>
+        <footer>
+            <a href="#" class="warning">JSON ne supporte pas de format Date</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Format BSON (Binary JSON)</h3>
+        <p>Etend le format JSON en apportant de nouveaux types de champs et de meilleurs performances.</p>
+        <article class="container">
+            <div class="col">
+                <ul>
+                    <li>Lightweight (peu d'espace disque)</li>
+                    <li>Traversable (parcourir, écrire, modifier, supprimer...)</li>
+                    <li>Efficient (encodage / décodage très performant)</li>
+                </ul>
+            </div>
+            <div class="col">
+                <img src="assets/images/bson.jpg" alt="MongoDB BSON">
+            </div>
+        </article>
+        <footer>
+            <a href="http://bsonspec.org" class="info" target="_blank">BSON Spec</a>
+        </footer>
+    </section>
+
+</section>

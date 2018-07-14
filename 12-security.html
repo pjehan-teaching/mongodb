@@ -1,0 +1,39 @@
+<section id="security">
+
+    <section>
+        <h2>Sécurité</h2>
+    </section>
+
+    <section>
+        <h3>Activer l'authentification</h3>
+        <p>Pour activer le système d'authentification, vous devez commencer par créer un nouvel utilisateur :</p>
+<pre><code class="language-bash">> use admin
+> db.createUser({ user: "admin", pwd: "1234", roles: [{ role: "userAdminAnyDatabase", db: "admin" }, { role: "readWriteAnyDatabase", db: "admin" }] })
+</code></pre>
+        <p>Il faut ensuite redémarrer le serveur mongod en activant l'authentification :</p>
+        <pre><code class="language-bash">mongod --auth</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/built-in-roles" class="info" target="_blank">MongoDB Built-In Roles</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>S'authentifier</h3>
+        <p>Vous pouvez vous connecter au mongo shell en vous authentifiant :</p>
+        <pre><code class="language-bash">mongo -u "admin" -p "1234" --authenticationDatabase "admin"</code></pre>
+        <p>Vous pouvez également vous connecter dans un premier temps puis vous authentifier ensuite :</p>
+<pre><code class="language-bash">mongo
+> use admin
+> db.auth("admin", "1234")
+</code></pre>
+    </section>
+
+    <section>
+        <h3>Modifier un utilisateur</h3>
+        <p>MongoDB met à disposition de <strong>nombreuses méthodes</strong> permettant de gérer les utilisateurs. Vous pouvez ainsi facilement créer un utilisateur, le supprimer, modifier ses droits, lui ajouter des accès sur une base de données...</p>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/method/js-user-management" class="info" target="_blank">MongoDB User Management Methods</a>
+        </footer>
+    </section>
+
+</section>

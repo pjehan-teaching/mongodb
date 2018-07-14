@@ -1,0 +1,20 @@
+/* Scaling */
+.scaling-up i {
+    transition-duration: 3s;
+    transition-delay: 5s;
+}
+.scaling-down .scaling-down-container {
+    width: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0 auto;
+    transition-duration: 3s;
+    transition-delay: 13s;
+}
+
+.present:not(.stack) .scaling-up i {
+    font-size: 5em;
+}
+.present:not(.stack) .scaling-down .scaling-down-container {
+    width: 100%;
+}
