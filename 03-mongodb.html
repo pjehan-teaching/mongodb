@@ -25,7 +25,7 @@
                 <i class="fa fa-server"></i>
             </div>
             <div class="col scaling-down">
-                <h4>Scaling Down</h4>
+                <h4>Scaling Down (Sharding)</h4>
                 <div class="scaling-down-container">
                     <i class="fa fa-server"></i>
                     <i class="fa fa-server"></i>
@@ -57,8 +57,8 @@
     <section>
         <h3>... et ses inconvénients</h3>
         <ul>
-            <li class="fragment fade-left">Respecte le principe <strong>ACID</strong> (Atomic, Consistent, Isolated, Durable) mais <strong>uniquement au niveau d'un Document</strong></li>
-            <li class="fragment fade-left">Pas de <strong>transaction</strong> (il est cependant possible de s'en approcher en utilisant le système de <a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/" target="_blank">Two Phase Commits</a>)</li>
+            <li class="fragment fade-left">Respecte le principe <strong>ACID</strong> (Atomic, Consistent, Isolated, Durable) mais <del>uniquement au niveau d'un Document</del> ==> <a href="https://www.mongodb.com/transactions" target="_blank">V4</a></li>
+            <li class="fragment fade-left"><del>Pas de transaction</del> (il est cependant possible de s'en approcher en utilisant le système de <a href="https://docs.mongodb.com/manual/tutorial/perform-two-phase-commits/" target="_blank">Two Phase Commits</a>)</li>
             <li class="fragment fade-left">Pas de Foreign Keys et donc d'<strong>intégrité référentielle</strong></li>
         </ul>
     </section>
@@ -90,12 +90,25 @@
                 <td><p>February 2018</p></td>
             </tr>
             <tr>
+                <td><p>MongoDB 3.4</p></td>
+                <td><p>November 2016</p></td>
+                <td><p>Septembre 2019</p></td>
+            </tr>
+            <tr>
                 <td><p>MongoDB 3.6</p></td>
                 <td><p>November 2017</p></td>
                 <td><p>TBD</p></td>
             </tr>
+            <tr>
+                <td><p>MongoDB 4.0</p></td>
+                <td><p>Juin 2018</p></td>
+                <td><p>TBD</p></td>
+            </tr>
             </tbody>
         </table>
+        <footer>
+            <a href="https://www.mongodb.com/support-policy" class="info" target="_blank">Support Policy</a>
+        </footer>
     </section>
 
 </section>

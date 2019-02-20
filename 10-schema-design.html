@@ -12,7 +12,7 @@
             <li>Il n'y a pas de contraintes d'intégrité référentielle</li>
             <li>Supporte partiellement le principe ACID (au niveau d'un Document)</li>
             <li>Pas de diagramme figé</li>
-            <li>La structure des données dois être le plus proche possible des requêtes qui seront effectuée par l'application</li>
+            <li>La structure des données doit être la plus proche possible des requêtes qui seront effectuées par l'application</li>
         </ul>
     </section>
 
@@ -143,7 +143,7 @@
     <section>
         <h3>One to one</h3>
         <p>Situation parfaite pour intégrer (embed) les Documents les uns dans les autres. On réalise ici une <strong>dénormalisation</strong> des données.</p>
-<pre><code class="json" data-trim>country {
+<pre><code class="language-json" >country {
     _id: ObjectId("507f191e810c19729de860ea"),
     name: "France",
     population: 67000000,
@@ -151,7 +151,7 @@
 }
 </code></pre>
         <p>Ou</p>
-<pre><code class="json" data-trim>capital {
+<pre><code class="language-json" >capital {
     _id: ObjectId("507f1f77bcf86cd799439011"),
     name: "Paris",
     location: [2.352222, 48.856614]
@@ -181,14 +181,14 @@
 
     <section>
         <h3>One to many</h3>
-<pre><code class="json" data-trim>payment_method {
+<pre><code class="language-json" >payment_method {
     _id: ObjectId("507f191e810c19729de860ea"),
     title: "cash",
     icon: "fa-euro",
     orders: [...] <- Trop d'éléments
 }
 </code></pre>
-<pre><code class="json" data-trim>order {
+<pre><code class="language-json" >order {
     _id: ObjectId("507f1f77bcf86cd799439011"),
     number: "A002541",
     payment_method: { title: "cash", icon: "fa-euro" } <- Difficile à maintenir à jour en cas d'update
@@ -200,13 +200,13 @@
     <section>
         <h3>One to many</h3>
         <p>Il est préférable dans cette situation de faire un lien entre les documents (normalisation des données).</p>
-<pre><code class="json" data-trim>payment_method {
+<pre><code class="language-json" >payment_method {
     _id: ObjectId("507f191e810c19729de860ea"),
     title: "cash",
     icon: "fa-euro"
 }
 </code></pre>
-<pre><code class="json" data-trim>order {
+<pre><code class="language-json" >order {
     _id: ObjectId("507f1f77bcf86cd799439011"),
     number: "A002541",
     payment_method: ObjectId("507f191e810c19729de860ea")
@@ -225,7 +225,7 @@
 
     <section>
         <h3>One to few</h3>
-<pre><code class="json" data-trim>post {
+<pre><code class="language-json" >post {
     _id: ObjectId("507f1f77bcf86cd799439011"),
     title: "Post title",
     content: "Post content...",
@@ -245,14 +245,14 @@
 
     <section>
         <h3>Many to many</h3>
-<pre><code class="json" data-trim>book {
+<pre><code class="language-json" >book {
     _id: ObjectId("507f191e810c19729de860ea"),
     title: "Design Patterns",
     resume: "Capturing a wealth of experience about the design of object-oriented software...",
     authors: [ObjectId("507f1f77bcf86cd799439011"), ...]
 }
 </code></pre>
-<pre><code class="json" data-trim>author {
+<pre><code class="language-json" >author {
     _id: ObjectId("507f1f77bcf86cd799439011"),
     firstname: "Erich",
     lastname: "Gamma",

@@ -30,7 +30,7 @@
             <img src="assets/images/storage-engine.png" alt="MongoDB Storage Engine">
         </div>
         <footer>
-            <a href="https://docs.mongodb.com/manual/core/storage-engines" class="info">MongoDB Storage Engines</a>
+            <a href="https://docs.mongodb.com/manual/core/storage-engines" class="info" target="_blank">MongoDB Storage Engines</a>
         </footer>
     </section>
 
@@ -49,7 +49,7 @@
             <div class="col">
                 <h4>WiredTiger</h4>
                 <ul>
-                    <li>Par défaut depuis MongoDB 3.2
+                    <li>Par défaut depuis MongoDB 3.2</li>
                     <li>Document level concurrency (optimistic)</li>
                     <li>No in place update</li>
                     <li>Compression des données et des index</li>
@@ -166,7 +166,7 @@
         <h3>Geospacial Index</h3>
         <p>Il est possible de créer des index pour permettre des recherches sur des coordonnées (latitude, longitude).</p>
         <p>Pour stocker des coordonnées dans une base de données MongoDB, il est préférable de respecter la normalisation GeoJSON :</p>
-<pre><code class="json" data-trim>"geometry": {
+<pre><code class="language-json" >"geometry": {
     "type": "Point",
     "coordinates": [125.6, 10.1]
 }

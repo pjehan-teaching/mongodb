@@ -19,8 +19,9 @@
             <div class="instructions-content">
                 <ol>
                     <li>
-                        <p>Importez la base de données <a href="{{ asset('files/resources/mongodb/citybike.gz" class="download" target="_blank">citybike</a> :</p>
+                        <p>Importez la base de données <a href="/assets/files/citybike.gz" class="download" target="_blank">citybike</a> :</p>
                         <pre><code class="language-bash">mongorestore --drop --gzip --archive=./citybike.gz</code></pre>
+                        <pre><code class="language-bash">mongoimport --db citybike --collection stations --file citybike.json --jsonArray</code></pre>
                         <p>Cette base de données contient l'ensemble des données des stations vélo de la ville de Rennes ainsi qu'une liste de 1000 utilisateurs.</p>
                     </li>
                 </ol>
@@ -32,6 +33,7 @@
         <h3>Export</h3>
         <p>La commande ci-dessous permet d'effectuer un export :</p>
         <pre><code class="language-bash">mongodump --gzip --drop --db citybike --archive=./</code></pre>
+        <pre><code class="language-bash">mongoexport --db citybike --collection stations --out citybike.json</code></pre>
     </section>
 
 </section>
