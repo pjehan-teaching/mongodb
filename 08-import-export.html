@@ -14,6 +14,13 @@
     </section>
 
     <section>
+        <h3>Export</h3>
+        <p>La commande ci-dessous permet d'effectuer un export :</p>
+        <pre><code class="language-bash">mongodump --gzip --db citybike --archive=./</code></pre>
+        <pre><code class="language-bash">mongoexport --db citybike --collection stations --out citybike.json</code></pre>
+    </section>
+
+    <section>
         <h3>Import</h3>
         <div class="instructions">
             <div class="instructions-content">
@@ -27,13 +34,6 @@
                 </ol>
             </div>
         </div>
-    </section>
-
-    <section>
-        <h3>Export</h3>
-        <p>La commande ci-dessous permet d'effectuer un export :</p>
-        <pre><code class="language-bash">mongodump --gzip --drop --db citybike --archive=./</code></pre>
-        <pre><code class="language-bash">mongoexport --db citybike --collection stations --out citybike.json</code></pre>
     </section>
 
 </section>

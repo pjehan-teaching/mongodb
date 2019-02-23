@@ -8,7 +8,6 @@
         <h3>Particularités</h3>
         <ul>
             <li>Embed data (nested Document) permet d'éviter les jointures</li>
-            <li>Il n'est pas possible de faire des jointures</li>
             <li>Il n'y a pas de contraintes d'intégrité référentielle</li>
             <li>Supporte partiellement le principe ACID (au niveau d'un Document)</li>
             <li>Pas de diagramme figé</li>
@@ -127,7 +126,7 @@
 
     <section>
         <h3>Pas de transactions ??</h3>
-        <p>MongoDB ne permet pas d'écrire des transactions afin de s'assurer qu'une suite d'opération se déroule correctement.</p>
+        <p>MongoDB <del>ne permet pas</del> d'écrire des transactions afin de s'assurer qu'une suite d'opération se déroule correctement.</p>
         <p>Si l'ensemble des données à traiter dans une transaction se situent dans un même Document, le problème est résolu.</p>
     </section>
 
