@@ -171,7 +171,7 @@
     "coordinates": [125.6, 10.1]
 }
 </code></pre>
-<pre><code class="language-bash">> db.persons.find({ location.coordinates: { $near: [-1.68, 48.12] } })
+<pre><code class="language-bash">> db.persons.find({ "location.coordinates": { $near: [-1.68, 48.12] } })
 > db.persons.createIndex({ location: '2dsphere' })
 > db.persons.find({ location: { $near: { $geometry: { type: "Point", coordinates: [-1.68, 48.12] } } } })
 </code></pre>
