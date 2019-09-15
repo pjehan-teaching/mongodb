@@ -14,9 +14,9 @@
         <h3>MAC OS</h3>
         <pre><code class="language-bash">cd ~/Downloads/
 tar xvf mongodb-osx.tgz
-mkdir /data/db
+mkdir -p /data/db
 chmod -R 777 /data
-cp mongodb-osx/bin/* /usr/local/lib/
+cp mongodb-osx/bin/* /usr/local/bin/
 which mongod
 mongod
 </code></pre>

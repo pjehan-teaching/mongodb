@@ -49,9 +49,9 @@
                     <li>Nombre de personnes nées dans les années 80 (183)</li>
                     <!-- db.users.find({ birthdate: { $gte: ISODate("1980-01-01"), $lt: ISODate("1990-01-01") } }).count() -->
                     <li>Personnes ayant une adresse email free.fr (Joanne Titmarsh)</li>
-                    <!-- db.users.find({ email: { $regex: /@free.fr$/ } }).count() -->
+                    <!-- db.users.find({ email: { $regex: /@free\.fr$/ } }).count() -->
                     <li>Personnes ayant réalisées plus de 40 voyages (204)</li>
-                    <!--  -->
+                    <!-- db.users.find({ $where: "this.stations.length >= 40" }).count() -->
                 </ol>
             </div>
         </div>
@@ -164,15 +164,16 @@
         <div class="instructions">
             <div class="instructions-content">
                 <ol>
-                    <li>Comptez le nombre d'entreprises ayant des bureaux en France</li>
+                    <li>Comptez le nombre d'entreprises ayant des bureaux en France (362)</li>
                     <!-- db.companies.find({ "offices.country_code": "FRA" }, { name: 1 }).count() -->
-                    <li>Affichez la liste des entreprises n'ayant pas de bureaux</li>
+                    <li>Affichez la liste des entreprises n'ayant pas de bureaux (5057)</li>
                     <!-- db.companies.find({ offices: { $size: 0 } }).count() -->
-                    <li>Affichez le nombre moyen d'employés par entreprise</li>
+                    <!-- db.companies.find({ $or: [{ offices: { $exists: 0 } }, { offices: { $size: 0 } }] }).count() -->
+                    <li>Affichez le nombre moyen d'employés par entreprise (795.62)</li>
                     <!-- db.companies.aggregate([ { $group: { _id: null, avg_number_of_employees: { $avg: "$number_of_employees" } } } ]).pretty() -->
                     <li>Affichez la liste des catégories d'entreprise avec le nombre d'entreprises dans chaque catégorie</li>
                     <!-- db.companies.aggregate({ $group: { _id: "$category_code", count: { $sum: 1 } } }).pretty() -->
-                    <li>Recherchez la plus importante acquisition réalisée</li>
+                    <li>Recherchez la plus importante acquisition réalisée (Sprint Nextel -> Nextel Communications pour $35 000 000 000)</li>
                     <!-- db.companies.aggregate([{ $project: { name: 1, max: { $max: "$acquisitions.price_amount" } } }, { $sort: { max: -1 } }]).pretty() -->
                     <!-- db.companies.aggregate([ { $unwind: "$acquisitions" }, { $project: { name: "$name", amount: { $max: "$acquisitions.price_amount" }, company: "$acquisitions.company.name" } }, { $sort: { amount: -1 } } ]); -->
                     <li>Rechercher la liste des entreprises les plus anciennes</li>
