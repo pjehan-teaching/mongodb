@@ -69,7 +69,7 @@
     </section>
 
     <section>
-        <h3>Rechercher (Read)</h3>
+        <h3>Rechercher (Read) - query</h3>
         <p>Il est possible d'affiner les résultats de la recherche en passant en paramètre un Document définissant les contraintes à respecter lors de la recherche.</p>
 <pre><code class="language-bash">> db.stations.find({ "name": "Alma" })
 > db.stations.find({ "position.1": { $gte: 48.1 } })
@@ -83,20 +83,35 @@
     </section>
 
     <section>
-        <h3>Rechercher (Read)</h3>
+        <h3>Rechercher (Read) - projection</h3>
         <p>Il est possible de choisir les colonnes qui devront être retournées par la requête en passant un 2ème argument à la fonction <code class="language-js">find()</code> :</p>
         <pre><code class="language-bash">> db.stations.find({ "name": "Alma" }, { _id: 0, nom: 1 })</code></pre>
         <footer>
-            <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection" class="warning" style="font-size: 0.8em" target="_blank">Le champ _id est affiché par défaut</a>
+            <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection" class="warning" target="_blank">Le champ _id est affiché par défaut</a>
         </footer>
     </section>
 
     <section>
-        <h3>Rechercher (Read)</h3>
+        <h3>Rechercher (Read) - count</h3>
         <p>Il est possible de retourner le nombre de documents retournés par la requête en utilisant la fonction <code class="language-js">count()</code> :</p>
         <pre><code class="language-bash">> db.stations.find({ "name": "Alma" }).count()</code></pre>
         <p>Vous pouvez également définir des filtres en passant un document directement dans les parenthèses :</p>
         <pre><code class="language-bash">> db.stations.count({ "name": "Alma" })</code></pre>
+    </section>
+
+    <section>
+        <h3>Rechercher (Read) - sort</h3>
+        <p>Il est possible de trier les documents retournés par la requête en utilisant la fonction <code class="language-js">sort()</code> :</p>
+        <pre><code class="language-bash">> db.stations.sort({ name: 1 })</code></pre>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/reference/method/cursor.sort/" class="info" target="_blank">Il est possible de trier de manière descendante en utilisant -1</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Rechercher (Read) - limit</h3>
+        <p>Il est possible de limiter le nombre de documents retournés par la requête en utilisant la fonction <code class="language-js">limit()</code> :</p>
+        <pre><code class="language-bash">> db.stations.limit(5)</code></pre>
     </section>
 
     <section>
