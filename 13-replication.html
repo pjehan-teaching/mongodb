@@ -1,0 +1,189 @@
+<section id="replication">
+
+    <section>
+        <h2>Réplication</h2>
+    </section>
+
+    <section>
+        <h3>MongoDB Replica Set</h3>
+        <p>Un replica set est un ensemble de processus <code class="language-shell">mongod</code> ayant pour objectif de maintenir les mêmes données.</p>
+        <ul>
+            <li>Redondance des données</li>
+            <li>Haute disponibilité</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Primary et Secondary</h3>
+        <div class="container">
+            <div class="col">
+                <p>Un replica set sera donc constitué de plusieurs instances <code class="language-shell">mongod</code> parmis lesquelles une seule pourra avoir le rôle <strong>Primary</strong>.</p>
+                <p>L'instance Primary recevra l'ensemble des opérations d'écriture et les données seront ensuite répliquées sur les instances <strong>Secondary</strong>.</p>
+            </div>
+            <div class="col">
+                <img src="assets/images/replica-set.svg" alt="Replica Set">
+            </div>
+        </div>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/replication/" class="info" target="_blank">Un replica set ne peux avoir qu'un seul Primary</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Election</h3>
+        <div class="container">
+            <div class="col">
+                <p>En cas de problème technique sur l'instance Primary, les <strong>opérations d'écritures sont alors impossibles</strong>.</p>
+                <p>En revanche, on fonction des <a href="https://docs.mongodb.com/manual/core/read-preference/#read-preference-modes" target="_blank">préférences de lecture</a>, les données pourront rester <strong>accessibles en lecture</strong>.</p>
+                <p>Pour résoudre le problème, un système de vote permettra d'élire la <strong>nouvelle instance Primary</strong>.</p>
+            </div>
+            <div class="col">
+                <img src="assets/images/replica-set-election.svg" alt="Replica Set election">
+            </div>
+        </div>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/core/replica-set-elections/" class="info" target="_blank">Replica set elections</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Arbiter</h3>
+        <div class="container">
+            <div class="col">
+                <p>Il est également possible de définir une instance <code class="language-shell">mongod</code> comme <strong>arbitre</strong> pour les votes.</p>
+                <p>L'instance sera chargée uniquement de gérer les votes entre les autres instances.</p>
+            </div>
+            <div class="col">
+                <img src="assets/images/replica-set-arbiter.svg" alt="Replica Set arbiter">
+            </div>
+        </div>
+        <footer>
+            <a href="https://docs.mongodb.com/manual/core/replica-set-arbiter/" class="info" target="_blank">Utilisez un arbiter lorsque vous avez un nombre paire d'instances</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Mise en place</h3>
+        <div class="container">
+            <div class="col" style="flex: 2;">
+                <p>Pour mettre en place notre replica set, nous allons utiliser <strong>Docker</strong> et créer 3 containers pour nos 3 instances de <code class="language-shell">mongod</code>.</p>
+                <p>Dans un premier temps, nous allons créer un réseau via Docker dans lequel nous allons ensuite démarrer nos containers :</p>
+                <pre><code class="language-shell">docker network create mongo-rs-demo</code></pre>
+            </div>
+            <div class="col">
+                <img src="assets/images/docker.png" alt="Docker">
+            </div>
+        </div>
+        <footer>
+            <a href="https://docs.docker.com/engine/tutorials/networkingcontainers/" class="info" target="_blank">Docker Network</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Mise en place</h3>
+        <p>Maintenant, nous allons démarrer nos 3 containers :</p>
+        <pre><code class="language-shell">docker run --name mongo01 -d --net mongo-rs-demo mongo --replSet "rs0"
+docker run --name mongo02 -d --net mongo-rs-demo mongo --replSet "rs0"
+docker run --name mongo03 -d --net mongo-rs-demo mongo --replSet "rs0"</code></pre>
+        <ul>
+            <li><strong>--name</strong> : Nom du container</li>
+            <li><strong>-d</strong> : Mode détaché (se fermera lorsque le processus principal sera terminé)</li>
+            <li><strong>--net</strong> : Définir sur quel réseau démarrer le container</li>
+            <li><strong>--replSet</strong> : Définir le nom du replica set (doit être identique)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Mise en place</h3>
+        <p>Nous allons maintenant nous connecter à l'une des instances <code class="language-shell">mongod</code> pour initialiser le replica set :</p>
+        <div class="container">
+            <div class="col">
+                <p>Connexion au container</p>
+                <pre><code class="language-shell">docker exec -it mongo01 mongo</code></pre>
+            </div>
+            <div class="col">
+                <p>Initialisation du replica set</p>
+                <pre><code class="language-shell">> rs.initialize(config = {
+    "_id" : "rs0",
+    "members" : [
+        {
+            "_id" : 0,
+            "host" : "mongodb0:27017"
+        },
+        {
+            "_id" : 1,
+            "host" : "mongodb1:27017"
+        },
+        {
+            "_id" : 2,
+            "host" : "mongodb2:27017"
+        }
+    ]
+})</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Vérification du bon fonctionnement</h3>
+        <p>Vous pouvez afficher l'état du replica set avec la commande suivante :</p>
+        <pre><code class="language-shell">> rs.status()</code></pre>
+        <p>Si vous essayez de vous connecter à une instance Secondary et d'afficher la liste des bases de données, vous obtiendrez l'erreur suivante :</p>
+        <pre><code class="language-shell">"codeName": "NotMasterNoSlaveOk"</code></pre>
+        <p>Vous pouvez cependant modifier la configuration pour pouvoir lire les données :</p>
+        <pre><code class="language-shell">> rs.slaveOk()</code></pre>
+        <p>Cependant, vous ne pourrez toujours pas effectuer d'opérations d'écriture :</p>
+        <pre><code class="language-shell">> use test
+> db.createCollection('users')</code></pre>
+    </section>
+
+    <section>
+        <h3>Vérification du bon fonctionnement</h3>
+        <p>En revanche vous devriez pouvoir créer une nouvelle base de données sur Primary et voir la réplications s'effectuer :</p>
+        <pre><code class="language-shell">docker exec -it mongodb0 mongo
+use test
+db.createCollection('users')
+exit</code></pre>
+        <pre><code class="language-shell">docker exec -it mongodb1 mongo
+use test
+show collections</code></pre>
+    </section>
+
+    <section>
+        <h3>Vérification du bon fonctionnement</h3>
+        <p>Nous allons maintenant arrêter l'instance primary :</p>
+        <pre><code class="language-shell">docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+8c3a5a502e2f        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongodb2
+b03b088b62d6        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongodb1
+b63542190f05        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongodb0
+</code></pre>
+        <pre><code class="language-shell">docker stop b63542190f05</code></pre>
+        <pre><code class="language-shell">docker exec -it mongodb0 mongo
+Error response from daemon: Container b63542190f05fafc15569a5036976efdd7520c3ae0e363091cab5b70e64cc615 is not running
+docker exec -it mongodb1 mongo
+> rs.status()</code></pre>
+
+    </section>
+
+</section>
+
+<!--
+config = {
+    "_id" : "rs0",
+    "members" : [
+        {
+            "_id" : 0,
+            "host" : "mongodb0:27017"
+        },
+        {
+            "_id" : 1,
+            "host" : "mongodb1:27017"
+        },
+        {
+            "_id" : 2,
+            "host" : "mongodb2:27017"
+        }
+    ]
+}
+-->
