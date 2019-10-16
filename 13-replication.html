@@ -103,20 +103,20 @@ docker run --name mongo03 -d --net mongo-rs-demo mongo --replSet "rs0"</code></p
             </div>
             <div class="col">
                 <p>Initialisation du replica set</p>
-                <pre><code class="language-shell">> rs.initialize(config = {
+                <pre><code class="language-shell">> rs.initiate(config = {
     "_id" : "rs0",
     "members" : [
         {
             "_id" : 0,
-            "host" : "mongodb0:27017"
+            "host" : "mongo01:27017"
         },
         {
             "_id" : 1,
-            "host" : "mongodb1:27017"
+            "host" : "mongo02:27017"
         },
         {
             "_id" : 2,
-            "host" : "mongodb2:27017"
+            "host" : "mongo03:27017"
         }
     ]
 })</code></pre>
@@ -140,11 +140,11 @@ docker run --name mongo03 -d --net mongo-rs-demo mongo --replSet "rs0"</code></p
     <section>
         <h3>Vérification du bon fonctionnement</h3>
         <p>En revanche vous devriez pouvoir créer une nouvelle base de données sur Primary et voir la réplications s'effectuer :</p>
-        <pre><code class="language-shell">docker exec -it mongodb0 mongo
+        <pre><code class="language-shell">docker exec -it mongo01 mongo
 use test
 db.createCollection('users')
 exit</code></pre>
-        <pre><code class="language-shell">docker exec -it mongodb1 mongo
+        <pre><code class="language-shell">docker exec -it mongo02 mongo
 use test
 show collections</code></pre>
     </section>
@@ -154,14 +154,14 @@ show collections</code></pre>
         <p>Nous allons maintenant arrêter l'instance primary :</p>
         <pre><code class="language-shell">docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
-8c3a5a502e2f        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongodb2
-b03b088b62d6        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongodb1
-b63542190f05        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongodb0
+8c3a5a502e2f        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongo03
+b03b088b62d6        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongo02
+b63542190f05        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongo01
 </code></pre>
         <pre><code class="language-shell">docker stop b63542190f05</code></pre>
-        <pre><code class="language-shell">docker exec -it mongodb0 mongo
+        <pre><code class="language-shell">docker exec -it mongo01 mongo
 Error response from daemon: Container b63542190f05fafc15569a5036976efdd7520c3ae0e363091cab5b70e64cc615 is not running
-docker exec -it mongodb1 mongo
+docker exec -it mongo02 mongo
 > rs.status()</code></pre>
 
     </section>
