@@ -1,4 +1,5 @@
 module.exports = {
-    name: 'MongoDB',
-    stylesheets: ['assets/css/style.css']
-}
+  name: 'MongoDB',
+  stylesheets: [],
+  javascripts: ['assets/js/script.js']
+};

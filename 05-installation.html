@@ -12,13 +12,19 @@
 
     <section>
         <h3>MAC OS</h3>
-        <pre><code class="language-bash">cd ~/Downloads/
-tar xvf mongodb-osx.tgz
-mkdir -p /data/db
+        <pre><code class="language-bash">mkdir -p /data/db
 chmod -R 777 /data
+cd ~/Downloads/
+tar xvf mongodb-osx.tgz
 cp mongodb-osx/bin/* /usr/local/bin/
 which mongod
 mongod
+</code></pre>
+        <p>En cas de problème de droits pour la création du dossier <code>/data/db</code> :</p>
+        <pre><code class="language-bash">cd ~
+mkdir -p data/db
+chmod -R 777 data
+mongod --dbpath=~/data/db
 </code></pre>
         <p>Le serveur démarre sur le port par défaut : 27017</p>
     </section>
@@ -27,7 +33,7 @@ mongod
         <h3>Windows</h3>
         <ol>
             <li>Télécharger et installer le fichier .msi</li>
-            <li>Les fichiers sont installés dans C:\Program Files\MongoDB\Server\3.6\bin\</li>
+            <li>Les fichiers sont installés dans C:\Program Files\MongoDB\Server\[VERSION_MONGODB]\bin\</li>
             <li>Ajouter ce répertoire dans le PATH (modifiable depuis les variables d'environnement)</li>
         </ol>
         <pre><code class="language-bash">md \data
