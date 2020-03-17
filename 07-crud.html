@@ -102,7 +102,7 @@
     <section>
         <h3>Rechercher (Read) - sort</h3>
         <p>Il est possible de trier les documents retournés par la requête en utilisant la fonction <code class="language-js">sort()</code> :</p>
-        <pre><code class="language-bash">> db.stations.sort({ name: 1 })</code></pre>
+        <pre><code class="language-bash">> db.stations.find().sort({ name: 1 })</code></pre>
         <footer>
             <a href="https://docs.mongodb.com/manual/reference/method/cursor.sort/" class="info" target="_blank">Il est possible de trier de manière descendante en utilisant -1</a>
         </footer>
