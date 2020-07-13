@@ -85,7 +85,7 @@
     <section>
         <h3>Rechercher (Read) - projection</h3>
         <p>Il est possible de choisir les colonnes qui devront être retournées par la requête en passant un 2ème argument à la fonction <code class="language-js">find()</code> :</p>
-        <pre><code class="language-bash">> db.stations.find({ "name": "Alma" }, { _id: 0, nom: 1 })</code></pre>
+        <pre><code class="language-bash">> db.stations.find({ "name": "Alma" }, { _id: 0, name: 1 })</code></pre>
         <footer>
             <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection" class="warning" target="_blank">Le champ _id est affiché par défaut</a>
         </footer>
@@ -111,7 +111,7 @@
     <section>
         <h3>Rechercher (Read) - limit</h3>
         <p>Il est possible de limiter le nombre de documents retournés par la requête en utilisant la fonction <code class="language-js">limit()</code> :</p>
-        <pre><code class="language-bash">> db.stations.limit(5)</code></pre>
+        <pre><code class="language-bash">> db.stations.find().limit(5)</code></pre>
     </section>
 
     <section>

@@ -154,7 +154,7 @@
     <section>
         <h3>Aggregation Framework - Unwind</h3>
         <p>Unwind peut être utilisé pour effectuer un regroupement sur les éléments d'un tableau :</p>
-<pre><code class="language-bash">> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $project: { _id: 0, name: 1, acquisition_price: "$acquisitions.price_amount" } } ]).pretty()
+<pre><code class="language-bash">> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $project: { _id: 0, name: 1, acquisition_price: "acquisitions.price_amount" } } ]).pretty()
 > db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $group: { _id: "$name", total_acquisitions: { $sum: "$acquisitions.price_amount" } } } ]).pretty()
 </code></pre>
     </section>
@@ -176,7 +176,7 @@
                     <li>Recherchez la plus importante acquisition réalisée (Sprint Nextel -> Nextel Communications pour $35 000 000 000)</li>
                     <!-- db.companies.aggregate([{ $project: { name: 1, max: { $max: "$acquisitions.price_amount" } } }, { $sort: { max: -1 } }]).pretty() -->
                     <!-- db.companies.aggregate([ { $unwind: "$acquisitions" }, { $project: { name: "$name", amount: { $max: "$acquisitions.price_amount" }, company: "$acquisitions.company.name" } }, { $sort: { amount: -1 } } ]); -->
-                    <li>Rechercher la liste des entreprises les plus anciennes</li>
+                    <li>Rechercher la liste des entreprises les plus anciennes (US Army)</li>
                     <!-- db.companies.find({ founded_year: { $exists: true, $ne: null } }, { name: 1, founded_year: 1, founded_month: 1, founded_day: 1 }).sort({ founded_year: 1, founded_month: 1, founded_day: 1 }).pretty() -->
                 </ol>
             </div>
@@ -195,6 +195,7 @@
                     <!-- db.companies.find({ relationships: { $elemMatch: { "person.first_name": "Steve", "person.last_name": "Jobs" } } }, { name: 1 }).pretty() -->
                     <li>Afficher la liste des entreprises avec la somme totale des investissements</li>
                     <!-- db.companies.aggregate([{ $unwind: "$funding_rounds" }, { $group: { _id: "$name", total_funded: { $sum: "$funding_rounds.raised_amount" } } } ]).pretty() -->
+                    <!-- db.companies.aggregate([{ $unwind: "$investments" }, { $group: { _id: "$name", total_invested: { $sum: "$investments.funding_round.raised_amount" } } } ]).pretty() -->
                     <li>Afficher la liste des milestones du 1er octobre 2013</li>
                     <!-- db.companies.aggregate({ $unwind: "$milestones" }, { $match: { "milestones.stoned_year": 2013, "milestones.stoned_month": 10, "milestones.stoned_day": 1 } }, { $project: { name: "$name", milestones: "$milestones" } }).pretty() -->
                     <!-- db.companies.aggregate({ $match: { milestones: { $elemMatch: { "stoned_year": 2013, "stoned_month": 10, "stoned_day": 1 } } } }, { $project: { name: "$name", milestones: "$milestones" } }).pretty() -->
