@@ -154,7 +154,7 @@
     <section>
         <h3>Aggregation Framework - Unwind</h3>
         <p>Unwind peut être utilisé pour effectuer un regroupement sur les éléments d'un tableau :</p>
-<pre><code class="language-bash">> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $project: { _id: 0, name: 1, acquisition_price: "acquisitions.price_amount" } } ]).pretty()
+<pre><code class="language-bash">> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $project: { _id: 0, name: 1, acquisition_price: "$acquisitions.price_amount" } } ]).pretty()
 > db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $group: { _id: "$name", total_acquisitions: { $sum: "$acquisitions.price_amount" } } } ]).pretty()
 </code></pre>
     </section>
