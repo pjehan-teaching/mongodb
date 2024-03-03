@@ -42,7 +42,17 @@ module.exports = {
                 }]
             },
             {
-                test: /\.(gz|json)$/,
+                test: /\.gz$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '../files/[name].[ext]'
+                    }
+                }]
+            },
+            {
+                test: /\.json$/,
+                type: 'javascript/auto',
                 use: [{
                     loader: 'file-loader',
                     options: {
