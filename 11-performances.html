@@ -57,7 +57,9 @@
             </div>
         </div>
         <footer>
-            <a href="https://docs.mongodb.com/manual/core/inmemory" class="info">Il existe également un autre moteur de stockage "In memory"</a>
+            <a href="https://docs.mongodb.com/manual/core/inmemory" class="info" target="_blank">
+                Il existe également un autre moteur de stockage "In memory"
+            </a>
         </footer>
     </section>
 
@@ -158,7 +160,7 @@
 > db.persons.find({ $text: { $search: "guitare" } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
 </code></pre>
         <footer>
-            <a href="https://docs.mongodb.com/manual/text-search" class="info" target="_blank">MongoDB Text Search</a>
+            <a href="https://www.mongodb.com/docs/manual/core/text-search/on-prem/" class="info" target="_blank">MongoDB Text Search</a>
         </footer>
     </section>
 

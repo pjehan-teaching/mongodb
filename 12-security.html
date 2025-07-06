@@ -20,9 +20,9 @@
     <section>
         <h3>S'authentifier</h3>
         <p>Vous pouvez vous connecter au mongo shell en vous authentifiant :</p>
-        <pre><code class="language-bash">mongo -u "admin" -p "1234" --authenticationDatabase "admin"</code></pre>
+        <pre><code class="language-bash">mongosh -u "admin" -p "1234" --authenticationDatabase "admin"</code></pre>
         <p>Vous pouvez également vous connecter dans un premier temps puis vous authentifier ensuite :</p>
-<pre><code class="language-bash">mongo
+<pre><code class="language-bash">mongosh
 > use admin
 > db.auth("admin", "1234")
 </code></pre>

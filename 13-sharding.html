@@ -35,7 +35,7 @@
         <ol>
             <li>Mise en place complexe</li>
             <li>Maintenabilité plus compliquée</li>
-            <li>Risque d'un mauvaise répartition des données entres les shards</li>
+            <li>Risque d'une mauvaise répartition des données entre les shards</li>
         </ol>
     </section>
 
@@ -43,7 +43,7 @@
         <h3>Répartition des données</h3>
         <p>Afin de répartir les données entre les Shard, une <strong>clé</strong> (shard key) doit être préalablement définie au sein d'une collection.</p>
         <img src="assets/images/sharding-shard-key.svg" alt="Shard Key">
-        <p>Cette clé peut être définie avec la l'instruction suivante :</p>
+        <p>Cette clé peut être définie avec l'instruction suivante :</p>
         <pre><code class="language-shell">> sh.shardCollection( namespace, key )</code></pre>
     </section>
 
@@ -52,15 +52,15 @@
         <p>Il faut donc prendre en considération les points suivants :</p>
         <ul>
             <li><strong>Cardinality</strong> : Si la clé choisie ne peut avoir que 3 valeurs (a, b ou c) il ne sera pas possible d'avoir plus de 3 shards.</li>
-            <li><strong>Frequency</strong> : Si la clé choisie a souvent la même valeur dans les document (50% de a par exemple) un seul shard sera très majoritairement utilisé.</li>
-            <li><strong>Rate of change</strong> : Si la clé choisie s'incrémente de manière constante, les documents finiront tous sur un même shard.</li>
+            <li><strong>Frequency</strong> : Si la clé choisie a souvent la même valeur dans les documents (50% de a par exemple) un seul shard sera très majoritairement utilisé.</li>
+            <li><strong>Rate of change</strong> : Si la clé choisie s'incrémente de manière constante, les documents finiront toutes sur un même shard.</li>
         </ul>
     </section>
 
     <section>
         <h3>Répartition des données</h3>
-        <p>Il est également possible d'utilisé un <strong>hash</strong> en tant que clé pour simplifier la répartition sur les shards.</p>
-        <p>Cependant, les recherches en base de données par segment seront plus lentes car elle nécessiterons d'aller rechercher sur plusieurs shards.</p>
+        <p>Il est également possible d'utiliser un <strong>hash</strong> en tant que clé pour simplifier la répartition sur les shards.</p>
+        <p>Cependant, les recherches en base de données par segment seront plus lentes, car elles nécessiteront d'aller rechercher sur plusieurs shards.</p>
         <img src="assets/images/sharding-hash.svg" alt="Hash">
     </section>
 

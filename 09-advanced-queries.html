@@ -31,7 +31,7 @@
                     <!-- db.stations.find({ bikes_available: 0 }).count() -->
                     <li>Nombre de stations qui ne sont pas "En fonctionnement" (0)</li>
                     <!-- db.stations.find({ state: { $not: { $eq: "En fonctionnement" } } }).count() -->
-                    <li>Nombre de stations ayant un nombre de place total supérieur à 25 et plus de 10 vélos disponibles (8)</li>
+                    <li>Nombre de stations ayant un nombre de places total supérieur à 25 et plus de 10 vélos disponibles (8)</li>
                     <!-- db.stations.find({ total_spaces: { $gt: 25 }, bikes_available: { $gt: 10 } }).count() -->
                 </ol>
             </div>
@@ -50,7 +50,7 @@
                     <!-- db.users.find({ birthdate: { $gte: ISODate("1980-01-01"), $lt: ISODate("1990-01-01") } }).count() -->
                     <li>Personnes ayant une adresse email free.fr (Joanne Titmarsh)</li>
                     <!-- db.users.find({ email: { $regex: /@free\.fr$/ } }).count() -->
-                    <li>Personnes ayant réalisées plus de 40 voyages (204)</li>
+                    <li>Personnes ayant réalisé plus de 40 voyages (204)</li>
                     <!-- db.users.find({ $where: "this.stations.length >= 40" }).count() -->
                 </ol>
             </div>

@@ -82,9 +82,9 @@
     <section>
         <h3>Mise en place</h3>
         <p>Maintenant, nous allons démarrer nos 3 containers :</p>
-        <pre><code class="language-shell">docker run --name mongo01 -d --net mongo-rs-demo mongo --replSet "rs0"
-docker run --name mongo02 -d --net mongo-rs-demo mongo --replSet "rs0"
-docker run --name mongo03 -d --net mongo-rs-demo mongo --replSet "rs0"</code></pre>
+        <pre><code class="language-shell">docker run --name mongo01 -d --net mongo-rs-demo mongosh --replSet "rs0"
+docker run --name mongo02 -d --net mongo-rs-demo mongosh --replSet "rs0"
+docker run --name mongo03 -d --net mongo-rs-demo mongosh --replSet "rs0"</code></pre>
         <ul>
             <li><strong>--name</strong> : Nom du container</li>
             <li><strong>-d</strong> : Mode détaché (se fermera lorsque le processus principal sera terminé)</li>
@@ -99,7 +99,7 @@ docker run --name mongo03 -d --net mongo-rs-demo mongo --replSet "rs0"</code></p
         <div class="container">
             <div class="col">
                 <p>Connexion au container</p>
-                <pre><code class="language-shell">docker exec -it mongo01 mongo</code></pre>
+                <pre><code class="language-shell">docker exec -it mongo01 mongosh</code></pre>
             </div>
             <div class="col">
                 <p>Initialisation du replica set</p>
@@ -139,12 +139,12 @@ docker run --name mongo03 -d --net mongo-rs-demo mongo --replSet "rs0"</code></p
 
     <section>
         <h3>Vérification du bon fonctionnement</h3>
-        <p>En revanche vous devriez pouvoir créer une nouvelle base de données sur Primary et voir la réplications s'effectuer :</p>
-        <pre><code class="language-shell">docker exec -it mongo01 mongo
+        <p>En revanche, vous devriez pouvoir créer une nouvelle base de données sur Primary et voir la réplication s'effectuer :</p>
+        <pre><code class="language-shell">docker exec -it mongo01 mongosh
 use test
 db.createCollection('users')
 exit</code></pre>
-        <pre><code class="language-shell">docker exec -it mongo02 mongo
+        <pre><code class="language-shell">docker exec -it mongo02 mongosh
 use test
 show collections</code></pre>
     </section>
@@ -159,9 +159,9 @@ b03b088b62d6        mongo               "docker-entrypoint.s…"   About an hour
 b63542190f05        mongo               "docker-entrypoint.s…"   About an hour ago   Up About an hour    27017/tcp           mongo01
 </code></pre>
         <pre><code class="language-shell">docker stop b63542190f05</code></pre>
-        <pre><code class="language-shell">docker exec -it mongo01 mongo
+        <pre><code class="language-shell">docker exec -it mongo01 mongosh
 Error response from daemon: Container b63542190f05fafc15569a5036976efdd7520c3ae0e363091cab5b70e64cc615 is not running
-docker exec -it mongo02 mongo
+docker exec -it mongo02 mongosh
 > rs.status()</code></pre>
 
     </section>

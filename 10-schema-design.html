@@ -9,7 +9,7 @@
         <ul>
             <li>Embed data (nested Document) permet d'éviter les jointures</li>
             <li>Il n'y a pas de contraintes d'intégrité référentielle</li>
-            <li>Supporte partiellement le principe <abbr title="Atomicity, Consistency, Isolation, Durability">ACID</abbr> (au niveau d'un Document)</li>
+            <li>Supporte <s>partiellement</s> le principe <abbr title="Atomicity, Consistency, Isolation, Durability">ACID</abbr></li>
             <li>Pas de diagramme figé</li>
             <li>La structure des données doit être la plus proche possible des requêtes qui seront effectuées par l'application</li>
         </ul>
@@ -128,6 +128,11 @@
         <h3>Pas de transactions ??</h3>
         <p>MongoDB <del>ne permet pas</del> d'écrire des transactions afin de s'assurer qu'une suite d'opérations se déroule correctement.</p>
         <p>Si l'ensemble des données à traiter dans une transaction se situent dans un même Document, le problème est résolu.</p>
+        <footer>
+            <a href="https://www.mongodb.com/docs/manual/core/transactions/" class="info">
+                Transactions
+            </a>
+        </footer>
     </section>
 
     <section>
