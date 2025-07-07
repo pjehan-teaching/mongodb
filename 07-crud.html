@@ -94,7 +94,7 @@
         <p>Il est possible de retourner le nombre de documents retournés par la requête en utilisant la fonction <code class="language-js">count()</code> :</p>
         <pre><code class="language-bash">> db.stations.find({ "name": "Alma" }).count()</code></pre>
         <p>Vous pouvez également définir des filtres en passant un document directement dans les parenthèses :</p>
-        <pre><code class="language-bash">> db.stations.count({ "name": "Alma" })</code></pre>
+        <pre><code class="language-bash">> db.stations.countDocuments({ "name": "Alma" })</code></pre>
     </section>
 
     <section>
@@ -113,11 +113,17 @@
     </section>
 
     <section>
+        <h3>Rechercher (Read) - skip</h3>
+        <p>Il est possible de sauter un certain nombre de documents avant de commencer à retourner les résultats en utilisant la fonction <code class="language-js">skip()</code> :</p>
+        <pre><code class="language-bash">> db.stations.find().skip(5)</code></pre>
+    </section>
+
+    <section>
         <h3>Curseur</h3>
         <p>Pour pouvoir parcourir les résultats retournés par le fonction <code class="language-bash">find()</code>, il est possible d'utiliser la fonction <code class="language-bash">toArray()</code>.</p>
         <p>Cependant, cela signifie que MongoDB devra attendre d'avoir récupéré l'ensemble des Documents qui seront chargés en RAM avant de pouvoir les parcourir.</p>
         <p>L'utilisation d'un curseur permet de récupérer les Documents par lots (batch) et de les traiter progressivement.</p>
-<pre><code class="language-bash">> var cursor = db.stations.find()
+<pre><code class="language-bash">> let cursor = db.stations.find()
 > cursor.hasNext()
 > cursor.next()
 </code></pre>
