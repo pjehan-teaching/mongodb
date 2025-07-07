@@ -227,7 +227,7 @@
             </div>
         </div>
 <pre><code class="language-bash">mongod --profile 1 --slowms 2
-> db.system.profile.find().pretty()
+> db.system.profile.find()
 </code></pre>
         <p>Le paramètre <code class="language-bash">--slowms 2</code> permet de logger toutes les requêtes ayant un temps d'execution supérieur à 2ms.</p>
     </section>

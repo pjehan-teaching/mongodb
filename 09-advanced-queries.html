@@ -69,9 +69,11 @@
                 <ol>
                     <li>Nombre de stations (83)</li>
                     <!-- db.stations.find().count() -->
+                    <!-- db.stations.countDocuments() -->
                     <li>Nombre de stations n'ayant plus de vélos disponibles (4)</li>
                     <!-- db.stations.find({ bikes_available: 0 }).count() -->
                     <li>Nombre de stations qui ne sont pas "En fonctionnement" (0)</li>
+                    <!-- db.stations.find({ state: { $ne: "En fonctionnement" } }).count() -->
                     <!-- db.stations.find({ state: { $not: { $eq: "En fonctionnement" } } }).count() -->
                     <li>Nombre de stations ayant un nombre de places total supérieur à 25 et plus de 10 vélos disponibles (8)</li>
                     <!-- db.stations.find({ total_spaces: { $gt: 25 }, bikes_available: { $gt: 10 } }).count() -->
@@ -92,9 +94,11 @@
                     <!-- db.users.find({ birthdate: { $gte: ISODate("1980-01-01"), $lt: ISODate("1990-01-01") } }).count() -->
                     <li>Personnes ayant une adresse email free.fr (Joanne Titmarsh)</li>
                     <!-- db.users.find({ email: { $regex: /@free\.fr$/ } }).count() -->
+                    <!-- db.users.find({ email: /@free\.fr$/ }).count() -->
                     <li>Personnes ayant réalisé 40 voyages ou plus (204)</li>
                     <!-- db.users.find({ $where: "this.stations.length >= 40" }).count() -->
                     <!-- db.users.find({ "stations.39": { $exists: true } }).count() -->
+                    <!-- db.users.find({ $expr: { $gt: [{ $size: "$stations" }, 39] } }).count() -->
                 </ol>
             </div>
         </div>
@@ -153,7 +157,7 @@
 
     <section>
         <h3>Aggregation Framework - Unwind</h3>
-        <p>Unwind permet décomposer le contenu d'un tableau.</p>
+        <p>Unwind permet de décomposer le contenu d'un tableau.</p>
         <div class="container">
             <div class="col">
 <pre><code class="language-json" style="font-size: 0.8em">{
@@ -197,8 +201,8 @@
     <section>
         <h3>Aggregation Framework - Unwind</h3>
         <p>Unwind peut être utilisé pour effectuer un regroupement sur les éléments d'un tableau :</p>
-<pre><code class="language-bash">> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $project: { _id: 0, name: 1, acquisition_price: "$acquisitions.price_amount" } } ]).pretty()
-> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $group: { _id: "$name", total_acquisitions: { $sum: "$acquisitions.price_amount" } } } ]).pretty()
+<pre><code class="language-bash">> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $project: { _id: 0, name: 1, acquisition_price: "$acquisitions.price_amount" } } ])
+> db.companies.aggregate([ { $match: { name: "Amazon" } }, { $unwind: "$acquisitions" }, { $group: { _id: "$name", total_acquisitions: { $sum: "$acquisitions.price_amount" } } } ])
 </code></pre>
     </section>
 
@@ -213,14 +217,14 @@
                     <!-- db.companies.find({ offices: { $size: 0 } }).count() -->
                     <!-- db.companies.find({ $or: [{ offices: { $exists: 0 } }, { offices: { $size: 0 } }] }).count() -->
                     <li>Affichez le nombre moyen d'employés par entreprise (795.62)</li>
-                    <!-- db.companies.aggregate([ { $group: { _id: null, avg_number_of_employees: { $avg: "$number_of_employees" } } } ]).pretty() -->
+                    <!-- db.companies.aggregate([ { $group: { _id: null, avg_number_of_employees: { $avg: "$number_of_employees" } } } ]) -->
                     <li>Affichez la liste des catégories d'entreprise avec le nombre d'entreprises dans chaque catégorie</li>
-                    <!-- db.companies.aggregate({ $group: { _id: "$category_code", count: { $sum: 1 } } }).pretty() -->
+                    <!-- db.companies.aggregate({ $group: { _id: "$category_code", count: { $sum: 1 } } }) -->
                     <li>Recherchez la plus importante acquisition réalisée (Sprint Nextel -> Nextel Communications pour $35 000 000 000)</li>
-                    <!-- db.companies.aggregate([{ $project: { name: 1, max: { $max: "$acquisitions.price_amount" } } }, { $sort: { max: -1 } }]).pretty() -->
+                    <!-- db.companies.aggregate([{ $project: { name: 1, max: { $max: "$acquisitions.price_amount" } } }, { $sort: { max: -1 } }]) -->
                     <!-- db.companies.aggregate([ { $unwind: "$acquisitions" }, { $project: { name: "$name", amount: { $max: "$acquisitions.price_amount" }, company: "$acquisitions.company.name" } }, { $sort: { amount: -1 } } ]); -->
                     <li>Rechercher la liste des entreprises les plus anciennes (US Army)</li>
-                    <!-- db.companies.find({ founded_year: { $exists: true, $ne: null } }, { name: 1, founded_year: 1, founded_month: 1, founded_day: 1 }).sort({ founded_year: 1, founded_month: 1, founded_day: 1 }).pretty() -->
+                    <!-- db.companies.find({ founded_year: { $exists: true, $ne: null } }, { name: 1, founded_year: 1, founded_month: 1, founded_day: 1 }).sort({ founded_year: 1, founded_month: 1, founded_day: 1 }) -->
                 </ol>
             </div>
         </div>
@@ -233,15 +237,15 @@
                 <ol>
                     <li>Recherchez le nombre d'entreprises en lien avec "Elon Musk" en recherchant dans les champs "description" et "overview"</li>
                     <!-- db.companies.createIndex({ description: "text", overview: "text"  }) -->
-                    <!-- db.companies.find({ $text: { $search: "\"Elon Musk\"" } }).pretty() -->
+                    <!-- db.companies.find({ $text: { $search: "\"Elon Musk\"" } }) -->
                     <li>Recherchez la liste des entreprises dans lesquelles "Steve Jobs" a travaillé</li>
-                    <!-- db.companies.find({ relationships: { $elemMatch: { "person.first_name": "Steve", "person.last_name": "Jobs" } } }, { name: 1 }).pretty() -->
+                    <!-- db.companies.find({ relationships: { $elemMatch: { "person.first_name": "Steve", "person.last_name": "Jobs" } } }, { name: 1 }) -->
                     <li>Afficher la liste des entreprises avec la somme totale des investissements</li>
-                    <!-- db.companies.aggregate([{ $unwind: "$funding_rounds" }, { $group: { _id: "$name", total_funded: { $sum: "$funding_rounds.raised_amount" } } } ]).pretty() -->
-                    <!-- db.companies.aggregate([{ $unwind: "$investments" }, { $group: { _id: "$name", total_invested: { $sum: "$investments.funding_round.raised_amount" } } } ]).pretty() -->
+                    <!-- db.companies.aggregate([{ $unwind: "$funding_rounds" }, { $group: { _id: "$name", total_funded: { $sum: "$funding_rounds.raised_amount" } } } ]) -->
+                    <!-- db.companies.aggregate([{ $unwind: "$investments" }, { $group: { _id: "$name", total_invested: { $sum: "$investments.funding_round.raised_amount" } } } ]) -->
                     <li>Afficher la liste des milestones du 1er octobre 2013</li>
-                    <!-- db.companies.aggregate({ $unwind: "$milestones" }, { $match: { "milestones.stoned_year": 2013, "milestones.stoned_month": 10, "milestones.stoned_day": 1 } }, { $project: { name: "$name", milestones: "$milestones" } }).pretty() -->
-                    <!-- db.companies.aggregate({ $match: { milestones: { $elemMatch: { "stoned_year": 2013, "stoned_month": 10, "stoned_day": 1 } } } }, { $project: { name: "$name", milestones: "$milestones" } }).pretty() -->
+                    <!-- db.companies.aggregate({ $unwind: "$milestones" }, { $match: { "milestones.stoned_year": 2013, "milestones.stoned_month": 10, "milestones.stoned_day": 1 } }, { $project: { name: "$name", milestones: "$milestones" } }) -->
+                    <!-- db.companies.aggregate({ $match: { milestones: { $elemMatch: { "stoned_year": 2013, "stoned_month": 10, "stoned_day": 1 } } } }, { $project: { name: "$name", milestones: "$milestones" } }) -->
                 </ol>
             </div>
         </div>
