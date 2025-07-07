@@ -222,7 +222,7 @@
                     <!-- db.companies.aggregate({ $group: { _id: "$category_code", count: { $sum: 1 } } }) -->
                     <li>Recherchez la plus importante acquisition réalisée (Sprint Nextel -> Nextel Communications pour $35 000 000 000)</li>
                     <!-- db.companies.aggregate([{ $project: { name: 1, max: { $max: "$acquisitions.price_amount" } } }, { $sort: { max: -1 } }]) -->
-                    <!-- db.companies.aggregate([ { $unwind: "$acquisitions" }, { $project: { name: "$name", amount: { $max: "$acquisitions.price_amount" }, company: "$acquisitions.company.name" } }, { $sort: { amount: -1 } } ]); -->
+                    <!-- db.companies.aggregate([ { $unwind: "$acquisitions" }, { $project: { name: "$name", amount: "$acquisitions.price_amount", company: "$acquisitions.company.name" } }, { $sort: { amount: -1 } } ]); -->
                     <li>Rechercher la liste des entreprises les plus anciennes (US Army)</li>
                     <!-- db.companies.find({ founded_year: { $exists: true, $ne: null } }, { name: 1, founded_year: 1, founded_month: 1, founded_day: 1 }).sort({ founded_year: 1, founded_month: 1, founded_day: 1 }) -->
                 </ol>
@@ -235,9 +235,9 @@
         <div class="instructions">
             <div class="instructions-content">
                 <ol>
-                    <li>Recherchez le nombre d'entreprises en lien avec "Elon Musk" en recherchant dans les champs "description" et "overview"</li>
+                    <li>Recherchez le nombre d'entreprises en lien avec "Steve Jobs" en recherchant dans les champs "description" et "overview" (3)</li>
                     <!-- db.companies.createIndex({ description: "text", overview: "text"  }) -->
-                    <!-- db.companies.find({ $text: { $search: "\"Elon Musk\"" } }) -->
+                    <!-- db.companies.find({ $text: { $search: "\"Steve Jobs\"" } }) -->
                     <li>Recherchez la liste des entreprises dans lesquelles "Steve Jobs" a travaillé</li>
                     <!-- db.companies.find({ relationships: { $elemMatch: { "person.first_name": "Steve", "person.last_name": "Jobs" } } }, { name: 1 }) -->
                     <li>Afficher la liste des entreprises avec la somme totale des investissements</li>
