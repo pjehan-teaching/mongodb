@@ -92,8 +92,9 @@
                     <!-- db.users.find({ birthdate: { $gte: ISODate("1980-01-01"), $lt: ISODate("1990-01-01") } }).count() -->
                     <li>Personnes ayant une adresse email free.fr (Joanne Titmarsh)</li>
                     <!-- db.users.find({ email: { $regex: /@free\.fr$/ } }).count() -->
-                    <li>Personnes ayant réalisé plus de 40 voyages (204)</li>
+                    <li>Personnes ayant réalisé 40 voyages ou plus (204)</li>
                     <!-- db.users.find({ $where: "this.stations.length >= 40" }).count() -->
+                    <!-- db.users.find({ "stations.39": { $exists: true } }).count() -->
                 </ol>
             </div>
         </div>
