@@ -12,7 +12,49 @@
                 <ol>
                     <li>Supprimez les champs "datasetid", "recordid", "fields.coordonnees" et "record_timestamp"</li>
                     <!-- db.stations.updateMany({}, { $unset: { datasetid: "", recordid: "", "fields.coordonnees": "", record_timestamp: "" } }) -->
-                    <li>Déplacez les champs contenus dans "fields" au niveau racine du Document et renommez les</li>
+                    <li>
+                        Déplacez les champs contenus dans "fields" au niveau racine du Document et renommez-les :
+                        <div style="max-height: 200px; overflow-y: auto;">
+                            <table class="dense">
+                                <thead>
+                                    <tr>
+                                        <th>Champ</th>
+                                        <th>Renommé en</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td><code>fields.etat</code></td>
+                                    <td><code>state</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>fields.lastupdate</code></td>
+                                    <td><code>lastupdate</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>fields.nombrevelosdisponibles</code></td>
+                                    <td><code>bikes_available</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>fields.nombreemplacementsactuels</code></td>
+                                    <td><code>total_spaces</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>fields.nom</code></td>
+                                    <td><code>name</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>fields.nombreemplacementsdisponibles</code></td>
+                                    <td><code>spaces_available</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>fields.idstation</code></td>
+                                    <td><code>idstation</code></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </li>
                     <!-- db.stations.updateMany({}, { $rename: { "fields.etat": "state", "fields.lastupdate": "lastupdate", "fields.nombrevelosdisponibles": "bikes_available", "fields.nombreemplacementsactuels": "total_spaces", "fields.nom": "name", "fields.nombreemplacementsdisponibles": "spaces_available", "fields.idstation": "idstation" } }) -->
                 </ol>
             </div>
