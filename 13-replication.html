@@ -82,9 +82,9 @@
     <section>
         <h3>Mise en place</h3>
         <p>Maintenant, nous allons démarrer nos 3 containers :</p>
-        <pre><code class="language-shell">docker run --name mongo01 -d --net mongo-rs-demo mongosh --replSet "rs0"
-docker run --name mongo02 -d --net mongo-rs-demo mongosh --replSet "rs0"
-docker run --name mongo03 -d --net mongo-rs-demo mongosh --replSet "rs0"</code></pre>
+        <pre><code class="language-shell">docker run --name mongo01 -d --net mongo-rs-demo mongo --replSet "rs0"
+docker run --name mongo02 -d --net mongo-rs-demo mongo --replSet "rs0"
+docker run --name mongo03 -d --net mongo-rs-demo mongo --replSet "rs0"</code></pre>
         <ul>
             <li><strong>--name</strong> : Nom du container</li>
             <li><strong>-d</strong> : Mode détaché (se fermera lorsque le processus principal sera terminé)</li>
