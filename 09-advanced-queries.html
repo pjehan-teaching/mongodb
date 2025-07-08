@@ -238,12 +238,12 @@
                     <li>Recherchez le nombre d'entreprises en lien avec "Steve Jobs" en recherchant dans les champs "description" et "overview" (3)</li>
                     <!-- db.companies.createIndex({ description: "text", overview: "text"  }) -->
                     <!-- db.companies.find({ $text: { $search: "\"Steve Jobs\"" } }) -->
-                    <li>Recherchez la liste des entreprises dans lesquelles "Steve Jobs" a travaillé</li>
+                    <li>Recherchez la liste des entreprises dans lesquelles "Steve Jobs" a travaillé (3)</li>
                     <!-- db.companies.find({ relationships: { $elemMatch: { "person.first_name": "Steve", "person.last_name": "Jobs" } } }, { name: 1 }) -->
-                    <li>Afficher la liste des entreprises avec la somme totale des investissements</li>
+                    <li>Afficher la liste des entreprises avec la somme totale des investissements (#1 Google, #2 Intel, #3 Comcast)</li>
                     <!-- db.companies.aggregate([{ $unwind: "$funding_rounds" }, { $group: { _id: "$name", total_funded: { $sum: "$funding_rounds.raised_amount" } } } ]) -->
                     <!-- db.companies.aggregate([{ $unwind: "$investments" }, { $group: { _id: "$name", total_invested: { $sum: "$investments.funding_round.raised_amount" } } } ]) -->
-                    <li>Afficher la liste des milestones du 1er octobre 2013</li>
+                    <li>Afficher la liste des milestones du 1er octobre 2013 (5)</li>
                     <!-- db.companies.aggregate({ $unwind: "$milestones" }, { $match: { "milestones.stoned_year": 2013, "milestones.stoned_month": 10, "milestones.stoned_day": 1 } }, { $project: { name: "$name", milestones: "$milestones" } }) -->
                     <!-- db.companies.aggregate({ $match: { milestones: { $elemMatch: { "stoned_year": 2013, "stoned_month": 10, "stoned_day": 1 } } } }, { $project: { name: "$name", milestones: "$milestones" } }) -->
                 </ol>
