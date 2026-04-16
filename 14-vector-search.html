@@ -319,4 +319,197 @@ for (let i = 0; i &lt; phrases.length; i++) {
         <p class="vs-hint" style="margin-top:8px; text-align: center;">Cliquez sur deux heatmaps pour les comparer ↑</p>
     </section>
 
+    <!-- ── utils.ts — mise à jour MongoDB ───────────────── -->
+    <section>
+        <h3>utils.ts — Ajout de la connexion MongoDB</h3>
+        <pre style="height: 70vh;" class="line-numbers" data-line="2,35-48"><code class="language-typescript">import { pipeline, FeatureExtractionPipeline } from '@huggingface/transformers';
+import { MongoClient } from 'mongodb';
+
+const MODEL = 'Xenova/paraphrase-multilingual-MiniLM-L12-v2';
+let extractorPromise: Promise&lt;FeatureExtractionPipeline&gt; | null = null;
+
+export async function getExtractor(): Promise&lt;FeatureExtractionPipeline&gt; {
+  if (!extractorPromise) {
+    console.log("Chargement du modèle d'embedding...");
+    extractorPromise = pipeline('feature-extraction', MODEL) as Promise&lt;FeatureExtractionPipeline&gt;;
+    const ext = await extractorPromise;
+    console.log("Modèle prêt.");
+    return ext;
+  }
+  return extractorPromise;
+}
+
+export async function generateEmbedding(text: string): Promise&lt;number[]&gt; {
+  const ext = await getExtractor();
+  // Pour paraphrase-multilingual-MiniLM-L12-v2, la combinaison pooling: 'mean' + normalize: true est celle recommandée dans la documentation du modèle sur HuggingFace.
+  const output = await ext(text, {
+    pooling: 'mean',    // moyenne des vecteurs de chaque token → un seul vecteur par phrase
+    normalize: true,    // normalisation L2 : ramène la norme du vecteur à 1, ce qui rend la similarité cosinus équivalente au produit scalaire
+  });
+  return Array.from(output.data as Float32Array);
+}
+
+export function cosineSimilarity(a: number[], b: number[]): number {
+  const dot   = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
+  const normA = Math.sqrt(a.reduce((sum, ai) => sum + ai ** 2, 0));
+  const normB = Math.sqrt(b.reduce((sum, bi) => sum + bi ** 2, 0));
+  return dot / (normA * normB);
+}
+
+export interface Article {
+  titre: string;
+  contenu: string;
+  categorie: string;
+  auteur: string;
+  embedding?: number[];
+}
+
+export async function getCollection&lt;T extends object&gt;(name: string) {
+  const client = new MongoClient(process.env.MONGODB_URI!);
+  await client.connect();
+  const collection = client.db('vector_search').collection&lt;T&gt;(name);
+  return { client, collection };
+}</code></pre>
+    </section>
+
+    <!-- ── Docker MongoDB Atlas Local ───────────────────── -->
+    <section>
+        <h3>MongoDB en local avec Docker</h3>
+        <p>L'image <code>mongodb-atlas-local</code> émule MongoDB Atlas <strong>localement</strong>, avec le support de la recherche vectorielle.</p>
+        <p>Créer <code>docker-compose.yml</code> :</p>
+        <pre><code class="language-yaml">services:
+  mongodb:
+    image: mongodb/mongodb-atlas-local:latest
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - mongodb_mongot:/data/mongot
+
+volumes:
+  mongodb_data:
+  mongodb_config:
+  mongodb_mongot:</code></pre>
+        <pre><code class="language-bash">docker compose up</code></pre>
+    </section>
+
+    <!-- ── Étape 2 : Insertion MongoDB ───────────────────── -->
+    <section>
+        <h3>Étape 2 — Insertion dans MongoDB</h3>
+        <p>Créer <code>.env</code> à la racine du projet :</p>
+        <pre><code class="language-bash"># MongoDB Atlas (cloud)
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/
+
+# MongoDB Atlas Local (Docker)
+MONGODB_URI=mongodb://127.0.0.1:27017/?directConnection=true</code></pre>
+        <p>Installer le driver MongoDB et ajouter le script :</p>
+        <pre><code class="language-bash">npm install mongodb</code></pre>
+        <p>Mettre à jour <code>package.json</code> :</p>
+        <pre><code class="language-json">"scripts": {
+  "01": "tsx src/01_embeddings.ts",
+  "02": "tsx --env-file=.env src/02_insert.ts"
+}</code></pre>
+        <p><code>--env-file</code> charge le fichier <code>.env</code> nativement sans dépendance supplémentaire (Node.js &gt;= 20.6).</p>
+    </section>
+
+    <!-- ── 02_insert.ts (1/2) ────────────────────────────── -->
+    <section>
+        <h3>02_insert.ts — Données</h3>
+        <pre style="height: 70vh"><code class="language-typescript">import { Article } from './utils.js';
+
+const articles: Article[] = [
+  {
+    titre: "Introduction à Python pour les débutants",
+    contenu:
+      "Python est un langage de programmation simple et lisible. " +
+      "Il est idéal pour apprendre la programmation grâce à sa syntaxe claire.",
+    categorie: "programmation",
+    auteur: "Alice Martin",
+  },
+  {
+    titre: "Les bases de JavaScript et du DOM",
+    contenu:
+      "JavaScript permet de rendre les pages web interactives. " +
+      "Il manipule le DOM pour modifier dynamiquement le contenu HTML.",
+    categorie: "programmation",
+    auteur: "Bob Dupont",
+  },
+  {
+    titre: "Recette de la tarte Tatin aux pommes",
+    contenu:
+      "La tarte Tatin est un dessert français classique. " +
+      "Caramélisez des pommes dans du beurre et du sucre avant d'ajouter la pâte.",
+    categorie: "cuisine",
+    auteur: "Claire Leroy",
+  },
+  {
+    titre: "Guide de la randonnée en montagne",
+    contenu:
+      "La randonnée en altitude demande une bonne préparation physique. " +
+      "Choisissez des chaussures adaptées et emportez suffisamment d'eau.",
+    categorie: "sport",
+    auteur: "David Moreau",
+  },
+  {
+    titre: "Comprendre les bases de données relationnelles",
+    contenu:
+      "Les bases de données SQL organisent les données en tables reliées entre elles. " +
+      "SQL permet d'effectuer des requêtes pour extraire et manipuler ces données.",
+    categorie: "programmation",
+    auteur: "Eve Petit",
+  },
+  {
+    titre: "Apprendre la programmation orientée objet",
+    contenu:
+      "La POO structure le code en classes et objets. " +
+      "L'encapsulation, l'héritage et le polymorphisme sont ses piliers fondamentaux.",
+    categorie: "programmation",
+    auteur: "François Simon",
+  },
+  {
+    titre: "Les bienfaits du yoga sur la santé",
+    contenu:
+      "Le yoga améliore la flexibilité et réduit le stress. " +
+      "Une pratique régulière favorise l'équilibre mental et physique.",
+    categorie: "sport",
+    auteur: "Grace Bernard",
+  },
+  {
+    titre: "Cuisiner des pâtes à la carbonara",
+    contenu:
+      "Les pâtes carbonara sont un plat italien authentique. " +
+      "Utilisez des œufs, du pecorino et de la pancetta, jamais de crème.",
+    categorie: "cuisine",
+    auteur: "Henri Girard",
+  },
+];</code></pre>
+    </section>
+
+    <!-- ── 02_insert.ts (2/2) ────────────────────────────── -->
+    <section>
+        <h3>02_insert.ts — Connexion &amp; insertion</h3>
+        <pre><code class="language-typescript">import { Article, generateEmbedding, getCollection } from './utils.js';
+
+const { client, collection } = await getCollection&lt;Article&gt;('articles');
+
+try {
+  await collection.deleteMany({});           // repart de zéro
+
+  for (const article of articles) {
+    article.embedding = await generateEmbedding(
+      `${article.titre} ${article.contenu}`  // titre + contenu → embedding
+    );
+    console.log(`✓ ${article.titre}`);
+  }
+
+  await collection.insertMany(articles);
+  console.log(`\n${articles.length} articles insérés.`);
+} finally {
+  await client.close();
+}</code></pre>
+        <pre><code class="language-bash">npm run 02</code></pre>
+    </section>
+
 </section>
