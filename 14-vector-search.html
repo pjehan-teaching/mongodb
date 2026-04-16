@@ -1,0 +1,322 @@
+<section id="vector-search">
+
+    <!-- ── Titre ─────────────────────────────────────── -->
+    <section>
+        <h2>Vector Search</h2>
+    </section>
+
+    <!-- ── Embeddings (théorie) ──────────────────────── -->
+    <section>
+        <h3>Embeddings</h3>
+        <p>
+            Les embeddings sont des <strong>représentations numériques</strong> des objets (comme les mots, les phrases, ou les images)
+            dans un <strong>espace vectoriel</strong> continu.
+        </p>
+        <p>
+            Les embeddings sont utilisés pour capturer les <strong>relations sémantiques</strong> entre les objets.
+            Par exemple, dans le cas des mots, les <strong>mots similaires auront des embeddings similaires</strong>.
+        </p>
+    </section>
+
+    <!-- ── Widget 1 : Visualisation des vecteurs ─────── -->
+    <section>
+        <h3>Représentation vectorielle</h3>
+        <div class="vs-layout">
+            <canvas id="vs-canvas-vec" class="vs-canvas" width="300" height="300"></canvas>
+            <div class="vs-panel">
+                <div class="vs-vec-row">
+                    <span class="vs-badge" style="background:#e74c3c">A</span>
+                    = [<span id="vs-va-x">3.00</span>,&nbsp;<span id="vs-va-y">2.00</span>]
+                </div>
+                <div class="vs-vec-row">
+                    <span class="vs-badge" style="background:#3498db">B</span>
+                    = [<span id="vs-vb-x">−1.00</span>,&nbsp;<span id="vs-vb-y">3.00</span>]
+                </div>
+                <p style="margin-top:10px">
+                    Chaque vecteur est une liste de <strong>nombres</strong> représentant un point
+                    dans un espace multidimensionnel.
+                </p>
+                <p>
+                    En recherche vectorielle, on stocke des <strong>embeddings</strong> (vecteurs à des centaines
+                    de dimensions) et on les compare pour trouver les éléments les plus <strong>sémantiquement proches</strong>.
+                </p>
+                <p class="vs-hint">⟵ Faites glisser les extrémités des vecteurs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Intro calculs de similarité ───────────────── -->
+    <section>
+        <h3>Calcul de similarité</h3>
+        <p>
+            Le calcul de similarité permet de mesurer la <strong>proximité</strong> entre deux vecteurs.
+            Il existe plusieurs méthodes :
+        </p>
+        <ul>
+            <li><strong>Euclidean Distance</strong> : distance en ligne droite entre deux points</li>
+            <li><strong>Manhattan Distance</strong> : distance par chemin orthogonal</li>
+            <li><strong>Dot Product</strong> : produit scalaire (direction + magnitude)</li>
+            <li><strong>Cosine Similarity</strong> : angle entre les vecteurs (direction uniquement)</li>
+        </ul>
+    </section>
+
+    <!-- ── Widget 2 : Distance Euclidienne ───────────── -->
+    <section>
+        <h3>Distance Euclidienne</h3>
+        <div class="vs-layout">
+            <canvas id="vs-canvas-eucl" class="vs-canvas" width="300" height="300"></canvas>
+            <div class="vs-panel">
+                <div class="vs-formula">d = √((bx − ax)² + (by − ay)²)</div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#e74c3c">A</span>
+                    = [<span id="vs-ea-x">−2.00</span>, <span id="vs-ea-y">−1.00</span>]
+                </div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#3498db">B</span>
+                    = [<span id="vs-eb-x">2.00</span>, <span id="vs-eb-y">3.00</span>]
+                </div>
+                <div class="vs-formula" id="vs-eucl-formula">√((4.00)² + (4.00)²)</div>
+                <div>Résultat : <span class="vs-result" id="vs-eucl-result">5.66</span></div>
+                <p style="margin-top:8px">Distance <strong>minimale</strong> entre deux points (le
+                chemin le plus court en ligne droite).</p>
+                <p class="vs-hint">⟵ Faites glisser les points A et B</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Widget 3 : Distance de Manhattan ──────────── -->
+    <section>
+        <h3>Distance de Manhattan</h3>
+        <div class="vs-layout">
+            <canvas id="vs-canvas-manh" class="vs-canvas" width="300" height="300"></canvas>
+            <div class="vs-panel">
+                <div class="vs-formula">d = |bx − ax| + |by − ay|</div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#e74c3c">A</span>
+                    = [<span id="vs-ma-x">−2.00</span>, <span id="vs-ma-y">−1.00</span>]
+                </div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#3498db">B</span>
+                    = [<span id="vs-mb-x">2.00</span>, <span id="vs-mb-y">3.00</span>]
+                </div>
+                <div class="vs-formula" id="vs-manh-formula">|4.00| + |4.00|</div>
+                <div>Résultat : <span class="vs-result" id="vs-manh-result">8.00</span></div>
+                <p style="margin-top:8px">Somme des déplacements sur chaque axe (comme naviguer
+                dans un <strong>quadrillage de rues</strong>).</p>
+                <p class="vs-hint">⟵ Faites glisser les points A et B</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Widget 4 : Produit Scalaire ───────────────── -->
+    <section>
+        <h3>Produit Scalaire (Dot Product)</h3>
+        <div class="vs-layout">
+            <canvas id="vs-canvas-dot" class="vs-canvas" width="300" height="300"></canvas>
+            <div class="vs-panel">
+                <div class="vs-formula">a·b = ax × bx + ay × by</div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#e74c3c">A</span>
+                    = [<span id="vs-da-x">3.00</span>, <span id="vs-da-y">1.00</span>]
+                </div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#3498db">B</span>
+                    = [<span id="vs-db-x">1.00</span>, <span id="vs-db-y">3.00</span>]
+                </div>
+                <div class="vs-formula" id="vs-dot-formula">3.00 × 1.00 + 1.00 × 3.00</div>
+                <div>Résultat : <span class="vs-result" id="vs-dot-result">6.00</span></div>
+                <p style="margin-top:8px">
+                    <strong>&gt; 0</strong> : même direction ·
+                    <strong>= 0</strong> : perpendiculaires ·
+                    <strong>&lt; 0</strong> : directions opposées
+                </p>
+                <p class="vs-hint">⟵ Faites glisser les extrémités des vecteurs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Widget 5 : Similarité Cosinus ─────────────── -->
+    <section>
+        <h3>Similarité Cosinus</h3>
+        <div class="vs-layout">
+            <canvas id="vs-canvas-cos" class="vs-canvas" width="300" height="300"></canvas>
+            <div class="vs-panel">
+                <div class="vs-formula">cos(θ) = (a·b) / (|a| × |b|)</div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#e74c3c">A</span>
+                    = [<span id="vs-ca-x">3.00</span>, <span id="vs-ca-y">1.00</span>]
+                </div>
+                <div class="vs-vec-row"><span class="vs-badge" style="background:#3498db">B</span>
+                    = [<span id="vs-cb-x">1.00</span>, <span id="vs-cb-y">3.00</span>]
+                </div>
+                <div class="vs-formula" id="vs-cos-formula">θ = 36.87°</div>
+                <div>Résultat : <span class="vs-result" id="vs-cos-result">0.80</span></div>
+                <p style="margin-top:8px">
+                    Valeur entre <strong>−1</strong> (opposés) et <strong>1</strong> (identiques).
+                    Indépendante de la <strong>magnitude</strong> (seule la direction compte).
+                </p>
+                <p class="vs-hint">⟵ Faites glisser les extrémités des vecteurs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Mise en pratique ──────────────────────────────── -->
+    <section>
+        <h3>Mise en pratique</h3>
+        <p>Objectif : créer un projet Node.js / TypeScript pour :</p>
+        <ol>
+            <li>Générer des <strong>embeddings</strong> à partir de phrases</li>
+            <li>Calculer la <strong>similarité cosinus</strong> entre ces vecteurs</li>
+            <li>Créer des vecteurs dans <strong>MongoDB Atlas</strong></li>
+            <li>Créer un <strong>index de recherche vectorielle</strong></li>
+            <li>Effectuer une <strong>recherche sémantique</strong></li>
+        </ol>
+        <pre><code class="language-bash">src/
+  utils.ts            # fonctions utilitaires partagées
+  01_embeddings.ts    # génération et comparaison d'embeddings</code></pre>
+    </section>
+
+    <!-- ── Initialisation du projet ──────────────────────── -->
+    <section>
+        <h3>Initialisation du projet</h3>
+        <pre><code class="language-bash">mkdir vector-search && cd vector-search
+npm init -y
+npm install @huggingface/transformers
+npm install -D typescript tsx @types/node</code></pre>
+        <p>Créer <code>tsconfig.json</code> :</p>
+        <pre><code class="language-json">{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true
+  }
+}</code></pre>
+    </section>
+
+    <!-- ── package.json ──────────────────────────────────── -->
+    <section>
+        <h3>package.json</h3>
+        <p>Activer les <strong>ES Modules</strong> et ajouter les scripts :</p>
+        <pre><code class="language-json">{
+  "name": "vector-search",
+  "type": "module",
+  "scripts": {
+    "01": "tsx src/01_embeddings.ts"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}</code></pre>
+        <p><code>"type": "module"</code> est requis par <code>@huggingface/transformers</code> (package ESM uniquement).</p>
+    </section>
+
+    <!-- ── utils.ts ──────────────────────────────────────── -->
+    <section>
+        <h3>utils.ts</h3>
+        <pre style="height: 70vh;"><code class="language-typescript">import { pipeline, FeatureExtractionPipeline } from '@huggingface/transformers';
+
+const MODEL = 'Xenova/paraphrase-multilingual-MiniLM-L12-v2';
+let extractorPromise: Promise&lt;FeatureExtractionPipeline&gt; | null = null;
+
+export async function getExtractor(): Promise&lt;FeatureExtractionPipeline&gt; {
+  if (!extractorPromise) {
+    console.log("Chargement du modèle d'embedding...");
+    extractorPromise = pipeline('feature-extraction', MODEL) as Promise&lt;FeatureExtractionPipeline&gt;;
+    const ext = await extractorPromise;
+    console.log("Modèle prêt.");
+    return ext;
+  }
+  return extractorPromise;
+}
+
+export async function generateEmbedding(text: string): Promise&lt;number[]&gt; {
+  const ext = await getExtractor();
+  // Pour paraphrase-multilingual-MiniLM-L12-v2, la combinaison pooling: 'mean' + normalize: true est celle recommandée dans la documentation du modèle sur HuggingFace.
+  const output = await ext(text, {
+    pooling: 'mean',    // moyenne des vecteurs de chaque token → un seul vecteur par phrase
+    normalize: true,    // normalisation L2 : ramène la norme du vecteur à 1, ce qui rend la similarité cosinus équivalente au produit scalaire
+  });
+  return Array.from(output.data as Float32Array);
+}
+
+export function cosineSimilarity(a: number[], b: number[]): number {
+  const dot   = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
+  const normA = Math.sqrt(a.reduce((sum, ai) => sum + ai ** 2, 0));
+  const normB = Math.sqrt(b.reduce((sum, bi) => sum + bi ** 2, 0));
+  return dot / (normA * normB);
+}</code></pre>
+    </section>
+
+    <!-- ── 01_embeddings.ts ───────────────────────────────── -->
+    <section>
+        <h3>01_embeddings.ts</h3>
+        <pre><code class="language-typescript">import { generateEmbedding, cosineSimilarity } from './utils.js';
+
+const phrases = [
+  "J'aime jouer au football.",
+  "Le football est mon sport favori.",
+  "J'adore manger des pâtes.",
+  "La cuisine italienne est ma préférée.",
+];
+
+const embeddings = await Promise.all(phrases.map(generateEmbedding));
+console.log(`Dimensions : ${embeddings[0].length}\n`);
+
+for (let i = 0; i &lt; phrases.length; i++) {
+  for (let j = i + 1; j &lt; phrases.length; j++) {
+    const sim = cosineSimilarity(embeddings[i], embeddings[j]);
+    console.log(`[${sim.toFixed(4)}] "${phrases[i]}" ↔ "${phrases[j]}"`);
+  }
+}</code></pre>
+        <pre><code class="language-bash">npm run 01</code></pre>
+    </section>
+
+    <!-- ── Résultat attendu ───────────────────────────────── -->
+    <section>
+        <h3>Résultat attendu</h3>
+        <pre><code class="language-bash">Dimensions : 384
+
+[0.8366] "J'aime jouer au football." ↔ "Le football est mon sport favori."
+[0.4087] "J'aime jouer au football." ↔ "J'adore manger des pâtes."
+[0.2873] "J'aime jouer au football." ↔ "La cuisine italienne est ma préférée."
+[0.3692] "Le football est mon sport favori." ↔ "J'adore manger des pâtes."
+[0.4045] "Le football est mon sport favori." ↔ "La cuisine italienne est ma préférée."
+[0.7367] "J'adore manger des pâtes." ↔ "La cuisine italienne est ma préférée."</code></pre>
+        <p>
+            Même thème → similarité <strong>élevée</strong> (&gt; 0.7) ·
+            Thèmes différents → similarité <strong>faible</strong> (&lt; 0.3)
+        </p>
+    </section>
+
+    <!-- ── Widget : Heatmap embeddings 384D ─────────────── -->
+    <section>
+        <h3>Embeddings — 384 dimensions</h3>
+        <p>Chaque phrase produit un vecteur de <strong>384 valeurs</strong> que l'on peut visualiser comme une carte de couleurs :</p>
+        <div class="vs-heatmap-row">
+            <div class="vs-heatmap-item">
+                <canvas id="vs-hm-0" class="vs-heatmap-canvas" width="240" height="160"></canvas>
+                <div class="vs-heatmap-label">A · "J'aime jouer au football."</div>
+            </div>
+            <div class="vs-heatmap-item">
+                <canvas id="vs-hm-1" class="vs-heatmap-canvas" width="240" height="160"></canvas>
+                <div class="vs-heatmap-label">B · "Le football est mon sport favori."</div>
+            </div>
+            <div class="vs-heatmap-item">
+                <canvas id="vs-hm-2" class="vs-heatmap-canvas" width="240" height="160"></canvas>
+                <div class="vs-heatmap-label">C · "J'adore manger des pâtes."</div>
+            </div>
+        </div>
+        <div class="vs-heatmap-sims">
+            <span>cos(A, B) = <strong class="vs-result" id="vs-hm-sim-01">—</strong></span>
+            <span>cos(A, C) = <strong class="vs-result" id="vs-hm-sim-02">—</strong></span>
+            <span>cos(B, C) = <strong class="vs-result" id="vs-hm-sim-12">—</strong></span>
+        </div>
+        <div class="vs-heatmap-legend">
+            <span>−</span>
+            <canvas id="vs-hm-legend" width="140" height="10" style="border-radius:3px"></canvas>
+            <span>+</span>
+            <span style="margin-left:10px">bleu = négatif &nbsp;·&nbsp; blanc = zéro &nbsp;·&nbsp; rouge = positif</span>
+        </div>
+        <p class="vs-hint" style="margin-top:8px; text-align: center;">Cliquez sur deux heatmaps pour les comparer ↑</p>
+    </section>
+
+</section>

@@ -41,4 +41,164 @@
         }
     }
 
+    /* ── Vector Search widgets ─────────────────────── */
+    .vs-layout {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        justify-content: center;
+        margin-top: 8px;
+    }
+    .vs-canvas {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        flex-shrink: 0;
+        cursor: crosshair;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .vs-panel {
+        text-align: left;
+        max-width: 290px;
+        font-size: .75em;
+    }
+    .vs-formula {
+        background: #1e1e2e;
+        color: #cdd6f4;
+        padding: 9px 13px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: .85em;
+        margin: 7px 0;
+        line-height: 1.5;
+    }
+    .vs-result {
+        font-weight: bold;
+        font-family: monospace;
+        font-size: 1.15em;
+        color: #27ae60;
+    }
+    .vs-vec-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 4px 0;
+        font-family: monospace;
+        font-size: .95em;
+    }
+    .vs-badge {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 20px;
+        color: #fff;
+        font-weight: bold;
+        font-size: .85em;
+        flex-shrink: 0;
+    }
+    .vs-hint {
+        font-size: .65em;
+        opacity: .55;
+        font-style: italic;
+        margin-top: 8px;
+    }
+
+    /* ── Heatmap embeddings ────────────────────────────── */
+    .vs-heatmap-row {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 18px;
+        margin-top: 8px;
+    }
+    .vs-heatmap-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    .vs-heatmap-canvas {
+        border: 2px solid transparent;
+        border-radius: 4px;
+        image-rendering: pixelated;
+        cursor: pointer;
+        transition: border-color .15s, box-shadow .15s;
+        &.vs-heatmap-selected {
+            border-color: #f39c12;
+            box-shadow: 0 0 14px rgba(243,156,18,.55);
+        }
+        &:hover { border-color: #bbb; }
+    }
+    .vs-heatmap-label {
+        font-size: .58em;
+        max-width: 240px;
+        text-align: center;
+        font-style: italic;
+        opacity: .8;
+        line-height: 1.3;
+    }
+    .vs-heatmap-sims {
+        display: flex;
+        justify-content: center;
+        gap: 28px;
+        margin-top: 10px;
+        font-size: .72em;
+    }
+    .vs-heatmap-legend {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 6px;
+        font-size: .58em;
+        opacity: .6;
+    }
+
+}
+
+/* ── Dialog de comparaison (hors .reveal car position:fixed) ── */
+dialog.vs-dialog {
+    border: none;
+    border-radius: 14px;
+    padding: 26px 30px;
+    box-shadow: 0 30px 90px rgba(0,0,0,.45);
+
+    &::backdrop { background: rgba(0,0,0,.6); }
+
+    .vs-dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        font-size: 1.05em;
+        font-weight: bold;
+    }
+    .vs-dialog-close {
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        width: 28px; height: 28px;
+        cursor: pointer;
+        font-size: .9em;
+        line-height: 1;
+        &:hover { background: #f0f0f0; }
+    }
+    .vs-dialog-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+    }
+    .vs-dialog-op {
+        font-size: 2.2em;
+        font-weight: 300;
+        opacity: .4;
+        line-height: 1;
+    }
+    .vs-dialog-footer {
+        text-align: center;
+        margin-top: 14px;
+        font-size: .88em;
+    }
 }
