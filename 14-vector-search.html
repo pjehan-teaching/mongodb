@@ -156,17 +156,18 @@
     <!-- ── Mise en pratique ──────────────────────────────── -->
     <section>
         <h3>Mise en pratique</h3>
-        <p>Objectif : créer un projet Node.js / TypeScript pour :</p>
-        <ol>
-            <li>Générer des <strong>embeddings</strong> à partir de phrases</li>
-            <li>Calculer la <strong>similarité cosinus</strong> entre ces vecteurs</li>
-            <li>Créer des vecteurs dans <strong>MongoDB Atlas</strong></li>
-            <li>Créer un <strong>index de recherche vectorielle</strong></li>
-            <li>Effectuer une <strong>recherche sémantique</strong></li>
-        </ol>
-        <pre><code class="language-bash">src/
-  utils.ts            # fonctions utilitaires partagées
-  01_embeddings.ts    # génération et comparaison d'embeddings</code></pre>
+        <div class="rag-tree">
+            <span class="rag-tree-dir">vector-search/</span><br>
+            ├── <span class="rag-tree-dir">src/</span><br>
+            │   ├── <span class="rag-tree-utils">utils.ts</span>          ← HuggingFace Transformers + MongoDB + similarité cosinus<br>
+            │   ├── <span class="rag-tree-step">01_embeddings.ts</span>   ← génération et comparaison d'embeddings<br>
+            │   ├── <span class="rag-tree-step">02_insert.ts</span>       ← génération des embeddings + insertion dans MongoDB<br>
+            │   ├── <span class="rag-tree-step">03_index.ts</span>        ← création de l'index de recherche vectorielle<br>
+            │   └── <span class="rag-tree-step">04_search.ts</span>       ← recherche sémantique via CLI<br>
+            ├── <span class="rag-tree-cfg">.env</span><br>
+            ├── <span class="rag-tree-cfg">package.json</span><br>
+            └── <span class="rag-tree-cfg">tsconfig.json</span>
+        </div>
     </section>
 
     <!-- ── Initialisation du projet ──────────────────────── -->
