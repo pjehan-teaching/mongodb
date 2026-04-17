@@ -1,0 +1,559 @@
+<section id="rag">
+
+    <!-- ── Titre ─────────────────────────────────────── -->
+    <section>
+        <h2>RAG avec MongoDB</h2>
+        <p style="text-align: center"><em>Retrieval-Augmented Generation</em></p>
+    </section>
+
+    <!-- ── Qu'est-ce que le RAG ? ────────────────────── -->
+    <section>
+        <h3>Qu'est-ce que le RAG ?</h3>
+        <p>
+            Un LLM possède des connaissances <strong>figées à sa date d'entraînement</strong>.
+            Le RAG lui permet d'interroger une <strong>base de connaissances à jour</strong>
+            avant de répondre.
+        </p>
+        <ol>
+            <li><strong>Retrieval</strong> — recherche des documents les plus pertinents par similarité vectorielle</li>
+            <li><strong>Augmented</strong> — injection de ces documents dans le prompt comme contexte</li>
+            <li><strong>Generation</strong> — le LLM génère une réponse ancrée dans ce contexte</li>
+        </ol>
+        <p>
+            Cas d'usage : répondre à des questions sur les <strong>sujets E7 BTS SIO</strong>
+            sans que le modèle ne les ait jamais lus.
+        </p>
+    </section>
+
+    <!-- ── Architecture ──────────────────────────────── -->
+    <section>
+        <h3>Architecture RAG</h3>
+        <p class="rag-phase-label">Phase 1 — Indexation (une seule fois)</p>
+        <div class="rag-flow">
+            <div class="rag-box">📄 PDF<small>pdf-parse</small></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-box">Découpage<small>chunks</small></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-box rag-box-accent">Embedding<small>nomic-embed-text</small></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-box rag-box-accent">MongoDB<small>$vectorSearch</small></div>
+        </div>
+        <hr class="rag-divider">
+        <p class="rag-phase-label">Phase 2 — Requête (à chaque question)</p>
+        <div class="rag-flow">
+            <div class="rag-box">❓ Question<small>CLI</small></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-box rag-box-accent">Embedding<small>nomic-embed-text</small></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-box rag-box-accent">MongoDB<small>top-K chunks</small></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-box rag-box-llm">LLM<small>llama3</small></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-box rag-box-out">💬 Réponse<small>streaming</small></div>
+        </div>
+        <p>
+            Tout tourne <strong>en local</strong> grâce à Ollama — aucune clé API requise.
+        </p>
+    </section>
+
+    <!-- ── Prérequis : Ollama ─────────────────────────── -->
+    <section>
+        <h3>Prérequis — Ollama</h3>
+        <p>Ollama fait tourner des LLM en local. Installation :</p>
+        <pre><code class="language-bash"># Linux / macOS
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Docker
+docker run -d -p 11434:11434 --name ollama ollama/ollama</code></pre>
+        <p>Téléchargement des modèles :</p>
+        <pre><code class="language-bash">ollama pull nomic-embed-text   # embeddings 768 dimensions (~270 Mo)
+ollama pull llama3             # modèle de chat (~4,7 Go)
+
+ollama list                    # vérification</code></pre>
+        <p>
+            L'API REST d'Ollama écoute sur <code>http://localhost:11434</code> —
+            c'est cette URL que le projet utilise directement via <code>fetch()</code>.
+        </p>
+        <footer>
+            <a href="https://ollama.com/download" target="_blank" class="info">
+                📥 Télécharger Ollama
+            </a>
+        </footer>
+    </section>
+
+    <!-- ── Prérequis : MongoDB ───────────────────────── -->
+    <section>
+        <h3>Prérequis — MongoDB (Docker)</h3>
+        <p>
+            L'image <code>mongodb-atlas-local</code> émule MongoDB Atlas <strong>localement</strong>,
+            avec le support de la recherche vectorielle.
+        </p>
+        <p>Créer <code>docker-compose.yml</code> à la racine du projet :</p>
+        <pre><code class="language-yaml">services:
+  mongodb:
+    image: mongodb/mongodb-atlas-local:latest
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - mongodb_mongot:/data/mongot
+
+volumes:
+  mongodb_data:
+  mongodb_config:
+  mongodb_mongot:</code></pre>
+        <pre><code class="language-bash">docker compose up</code></pre>
+    </section>
+
+    <!-- ── Mise en pratique ───────────────────────────── -->
+    <section>
+        <h3>Mise en pratique</h3>
+        <div class="rag-tree">
+            <span class="rag-tree-dir">rag-bts-sio/</span><br>
+            ├── <span class="rag-tree-dir">pdfs/</span> ← sujets E7 au format PDF<br>
+            ├── <span class="rag-tree-dir">src/</span><br>
+            │   ├── <span class="rag-tree-utils">utils.ts</span> ← MongoDB + Ollama + interface Chunk<br>
+            │   ├── <span class="rag-tree-step">01_pdf.ts</span> ← démo : extraction texte<br>
+            │   ├── <span class="rag-tree-step">02_chunks.ts</span> ← démo : découpage<br>
+            │   ├── <span class="rag-tree-step">03_insert.ts</span> ← pipeline complet : PDF → MongoDB<br>
+            │   ├── <span class="rag-tree-step">04_index.ts</span>  ← création de l'index vectoriel<br>
+            │   └── <span class="rag-tree-step">05_rag.ts</span> ← interface CLI RAG<br>
+            ├── <span class="rag-tree-cfg">.env</span><br>
+            ├── <span class="rag-tree-cfg">package.json</span><br>
+            └── <span class="rag-tree-cfg">tsconfig.json</span>
+        </div>
+    </section>
+
+    <!-- ── Initialisation du projet ──────────────────── -->
+    <section>
+        <h3>Initialisation du projet</h3>
+        <pre><code class="language-bash">mkdir rag-bts-sio && cd rag-bts-sio
+npm init -y
+mkdir pdfs src</code></pre>
+        <pre><code class="language-bash">npm install mongodb pdf-parse @langchain/textsplitters
+npm install -D typescript tsx @types/node @types/pdf-parse</code></pre>
+        <code>tsconfig.json</code>
+        <pre><code class="language-json">{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true
+  }
+}</code></pre>
+    </section>
+
+    <!-- ── package.json ───────────────────────────────── -->
+    <section>
+        <h3>package.json</h3>
+        <pre><code class="language-json">{
+  "name": "rag-bts-sio",
+  "type": "module",
+  "scripts": {
+    "01": "tsx --env-file=.env src/01_pdf.ts",
+    "02": "tsx --env-file=.env src/02_chunks.ts",
+    "03": "tsx --env-file=.env src/03_insert.ts",
+    "04": "tsx --env-file=.env src/04_index.ts",
+    "05": "tsx --env-file=.env src/05_rag.ts"
+  },
+  "dependencies": {
+    "@langchain/textsplitters": "^1.0.1",
+    "mongodb": "^7.1.1",
+    "pdf-parse": "^2.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/pdf-parse": "^1.1.5",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}</code></pre>
+    </section>
+
+    <!-- ── .env ───────────────────────────────────────── -->
+    <section>
+        <h3>.env</h3>
+        <pre><code class="language-bash"># MongoDB
+MONGODB_URI=mongodb://127.0.0.1:27017/?directConnection=true
+DB_NAME=rag_bts_sio
+COLLECTION_NAME=sujets_e7
+
+# Ollama
+OLLAMA_BASE_URL=http://localhost:11434
+EMBEDDING_MODEL=nomic-embed-text
+CHAT_MODEL=llama3
+
+# Pipeline
+PDF_DIR=./pdfs
+CHUNK_SIZE=500
+CHUNK_OVERLAP=50
+
+# Recherche
+TOP_K=5</code></pre>
+    </section>
+
+    <!-- ── utils.ts (v1) ────────────────────────────── -->
+    <section>
+        <h3>utils.ts — Extraction PDF</h3>
+        <pre class="line-numbers"><code class="language-typescript">import { PDFParse, VerbosityLevel } from 'pdf-parse';
+import { readFileSync } from 'fs';
+
+export async function parsePdf(filePath: string): Promise<{ text: string; pages: number }> {
+  const buffer = readFileSync(filePath);
+  const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: VerbosityLevel.ERRORS });
+  const text = await parser.getText();
+  const info = await parser.getInfo();
+
+  return { text: text.text, pages: info.total };
+}</code></pre>
+    </section>
+
+    <!-- ── 01_pdf.ts ─────────────────────────────── -->
+    <section>
+        <h3>01_pdf.ts</h3>
+        <pre class="line-numbers" style="max-height: 60vh"><code class="language-typescript">import { readdirSync } from 'fs';
+import { join } from 'path';
+import { parsePdf } from './utils.js';
+
+const pdfDir = process.env.PDF_DIR ?? './pdfs';
+const files  = readdirSync(pdfDir).filter((f: string) =&gt; f.endsWith('.pdf'));
+
+for (const file of files) {
+  const { text, pages } = await parsePdf(join(pdfDir, file));
+  console.log(`\n=== ${file} (${pages} pages) ===`);
+  console.log(text.slice(0, 400).replace(/\s+/g, ' ') + '…');
+}</code></pre>
+        <pre><code class="language-bash">npm run 01</code></pre>
+        <footer>
+            <a href="#" class="warning">
+                Nettoyez les données avant de les exploiter !
+            </a>
+        </footer>
+    </section>
+
+    <!-- ── utils.ts (v1) ────────────────────────────── -->
+    <section>
+        <h3>utils.ts — Interface</h3>
+        <pre class="line-numbers" data-line="4-9"><code class="language-typescript">import { PDFParse, VerbosityLevel } from 'pdf-parse';
+import { readFileSync } from 'fs';
+
+export interface Chunk {
+  source:     string;   // nom du fichier PDF
+  chunkIndex: number;   // position dans le document
+  contenu:    string;   // texte brut du chunk
+  embedding?: number[]; // vecteur (rempli lors de l'insertion)
+}
+
+export async function parsePdf(filePath: string): Promise<{ text: string; pages: number }> {
+  const buffer = readFileSync(filePath);
+  const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: VerbosityLevel.ERRORS });
+  const text = await parser.getText();
+  const info = await parser.getInfo();
+
+  return { text: text.text, pages: info.total };
+}</code></pre>
+    </section>
+
+    <!-- ── 02_chunks.ts ───────────────────────────────── -->
+    <section>
+        <h3>02_chunks.ts</h3>
+        <pre class="line-numbers" style="max-height: 60vh"><code class="language-typescript">import { readdirSync } from 'fs';
+import { join } from 'path';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { parsePdf } from './utils.js';
+
+const size = Number(process.env.CHUNK_SIZE) || 500;
+const overlap = Number(process.env.CHUNK_OVERLAP) || 50;
+const pdfDir = process.env.PDF_DIR ?? './pdfs';
+
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: size, // taille max d'un chunk (en caractères)
+  chunkOverlap: overlap, // chevauchement entre chunks consécutifs
+});
+
+const files = readdirSync(pdfDir).filter((f: string) =&gt; f.endsWith('.pdf'));
+
+for (const file of files) {
+  const { text } = await parsePdf(join(pdfDir, file));
+  const chunks = await splitter.splitText(text);
+
+  console.log(`${file} → ${chunks.length} chunks`);
+  console.log(`  Chunk 0 : "${chunks[0].slice(0, 120)}…"`);
+  console.log(`  Chunk 1 : "${chunks[1].slice(0, 120)}…"`);
+}</code></pre>
+        <pre><code class="language-bash">npm run 02</code></pre>
+    </section>
+
+    <!-- ── utils.ts (v2) — getCollection ───────────── -->
+    <section>
+        <h3>utils.ts — Ajout connexion MongoDB</h3>
+        <pre class="line-numbers" data-line="3,22-27" style="max-height: 60vh"><code class="language-typescript">import { PDFParse, VerbosityLevel } from 'pdf-parse';
+import { readFileSync } from 'fs';
+import { MongoClient } from 'mongodb';
+
+export interface Chunk {
+  source:     string;   // nom du fichier PDF
+  chunkIndex: number;   // position dans le document
+  contenu:    string;   // texte brut du chunk
+  embedding?: number[]; // vecteur (rempli lors de l'insertion)
+}
+
+export async function parsePdf(filePath: string): Promise<{ text: string; pages: number }> {
+  const buffer = readFileSync(filePath);
+  const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: VerbosityLevel.ERRORS });
+  const text = await parser.getText();
+  const info = await parser.getInfo();
+
+  return { text: text.text, pages: info.total };
+}
+
+export async function getCollection&lt;T extends object&gt;(name: string) {
+  const client = new MongoClient(process.env.MONGODB_URI!);
+  await client.connect();
+  const collection = client.db(process.env.DB_NAME).collection&lt;T&gt;(name);
+  return { client, collection };
+}</code></pre>
+    </section>
+
+    <!-- ── utils.ts (v3) — generateEmbedding ──────── -->
+    <section>
+        <h3>utils.ts — Ajout génération d'embedding</h3>
+        <pre class="line-numbers" data-line="29-36" style="max-height: 60vh"><code class="language-typescript">import { PDFParse, VerbosityLevel } from 'pdf-parse';
+import { readFileSync } from 'fs';
+import { MongoClient } from 'mongodb';
+
+export interface Chunk {
+  source:     string;   // nom du fichier PDF
+  chunkIndex: number;   // position dans le document
+  contenu:    string;   // texte brut du chunk
+  embedding?: number[]; // vecteur (rempli lors de l'insertion)
+}
+
+export async function parsePdf(filePath: string): Promise<{ text: string; pages: number }> {
+  const buffer = readFileSync(filePath);
+  const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: VerbosityLevel.ERRORS });
+  const text = await parser.getText();
+  const info = await parser.getInfo();
+
+  return { text: text.text, pages: info.total };
+}
+
+export async function getCollection&lt;T extends object&gt;(name: string) {
+  const client = new MongoClient(process.env.MONGODB_URI!);
+  await client.connect();
+  const collection = client.db(process.env.DB_NAME).collection&lt;T&gt;(name);
+  return { client, collection };
+}
+
+export async function generateEmbedding(text: string): Promise&lt;number[]&gt; {
+  const res  = await fetch(`${process.env.OLLAMA_BASE_URL}/api/embeddings`, {
+    method: 'POST',
+    body: JSON.stringify({ model: process.env.EMBEDDING_MODEL, prompt: text }),
+  });
+  const { embedding } = await res.json() as { embedding: number[] };
+  return embedding;
+}</code></pre>
+    </section>
+
+    <!-- ── 03_insert.ts ───────────────────────────────── -->
+    <section>
+        <h3>03_insert.ts</h3>
+        <pre class="line-numbers" style="max-height: 60vh"><code class="language-typescript">import { readdirSync } from 'fs';
+import { join } from 'path';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { Chunk, generateEmbedding, getCollection, parsePdf } from './utils.js';
+
+const size = Number(process.env.CHUNK_SIZE) || 500;
+const overlap = Number(process.env.CHUNK_OVERLAP) || 50;
+const pdfDir = process.env.PDF_DIR ?? './pdfs';
+
+const splitter = new RecursiveCharacterTextSplitter({ chunkSize: size, chunkOverlap: overlap });
+const { client, collection } = await getCollection&lt;Chunk&gt;(process.env.COLLECTION_NAME!);
+
+try {
+  await collection.deleteMany({});
+  const files = readdirSync(pdfDir).filter((f: string) =&gt; f.endsWith('.pdf'));
+
+  for (const file of files) {
+    const { text } = await parsePdf(join(pdfDir, file));
+    const texts    = await splitter.splitText(text);
+    console.log(`\n${file} → ${texts.length} chunks`);
+
+    const chunks: Chunk[] = [];
+    for (let i = 0; i &lt; texts.length; i++) {
+      chunks.push({
+        source:     file,
+        chunkIndex: i,
+        contenu:    texts[i],
+        embedding:  await generateEmbedding(texts[i]),
+      });
+      process.stdout.write(`\r  ⚙  ${i + 1} / ${texts.length} embeddings`);
+    }
+    await collection.insertMany(chunks);
+    console.log(`\n  ✓ ${chunks.length} chunks insérés`);
+  }
+} finally {
+  await client.close();
+}</code></pre>
+        <pre><code class="language-bash">npm run 03</code></pre>
+    </section>
+
+    <!-- ── 04_index.ts ────────────────────────────────── -->
+    <section>
+        <h3>04_index.ts</h3>
+        <pre class="line-numbers" style="max-height: 60vh"><code class="language-typescript">import { Chunk, getCollection } from './utils.js';
+
+const { client, collection } = await getCollection&lt;Chunk&gt;(process.env.COLLECTION_NAME!);
+
+try {
+  await collection.createSearchIndex({
+    name: 'vector_index',
+    type: 'vectorSearch',
+    definition: {
+      fields: [
+        {
+          type: 'vector',
+          path: 'embedding',
+          numDimensions: 768, // nomic-embed-text produit 768 dimensions
+          similarity: 'cosine',
+        },
+        {
+          type: 'filter',
+          path: 'source', // filtre optionnel par fichier PDF
+        },
+      ],
+    },
+  });
+  console.log('Index "vector_index" créé avec succès.');
+} finally {
+  await client.close();
+}</code></pre>
+        <pre><code class="language-bash">npm run 04</code></pre>
+    </section>
+
+    <!-- ── utils.ts (v4) — chat ───────────────────── -->
+    <section>
+        <h3>utils.ts — Ajout chat streaming</h3>
+        <pre class="line-numbers" style="height: 60vh" data-line="37-72"><code class="language-typescript">import { PDFParse, VerbosityLevel } from 'pdf-parse';
+import { readFileSync } from 'fs';
+import { MongoClient } from 'mongodb';
+
+export interface Chunk {
+  source:     string;   // nom du fichier PDF
+  chunkIndex: number;   // position dans le document
+  contenu:    string;   // texte brut du chunk
+  embedding?: number[]; // vecteur (rempli lors de l'insertion)
+}
+
+export async function parsePdf(filePath: string): Promise<{ text: string; pages: number }> {
+  const buffer = readFileSync(filePath);
+  const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: VerbosityLevel.ERRORS });
+  const text = await parser.getText();
+  const info = await parser.getInfo();
+
+  return { text: text.text, pages: info.total };
+}
+
+export async function getCollection&lt;T extends object&gt;(name: string) {
+  const client = new MongoClient(process.env.MONGODB_URI!);
+  await client.connect();
+  const collection = client.db(process.env.DB_NAME).collection&lt;T&gt;(name);
+  return { client, collection };
+}
+
+export async function generateEmbedding(text: string): Promise&lt;number[]&gt; {
+  const res  = await fetch(`${process.env.OLLAMA_BASE_URL}/api/embeddings`, {
+    method: 'POST',
+    body: JSON.stringify({ model: process.env.EMBEDDING_MODEL, prompt: text }),
+  });
+  const { embedding } = await res.json() as { embedding: number[] };
+  return embedding;
+}
+
+export async function chat(question: string, context: string): Promise&lt;void&gt; {
+  const system =
+    'Tu es un assistant expert. Réponds uniquement en te basant sur le contexte fourni.\n\n' +
+    `Contexte :\n${context}`;
+
+  const res = await fetch(`${process.env.OLLAMA_BASE_URL}/api/chat`, {
+    method: 'POST',
+    body: JSON.stringify({
+      model: process.env.CHAT_MODEL,
+      stream: true,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user',   content: question },
+      ],
+    }),
+  });
+
+  // Lecture du flux NDJSON (une ligne JSON par token)
+  const reader = res.body!.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop()!; // fragment incomplet
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const { message } = JSON.parse(line);
+      if (message?.content) process.stdout.write(message.content);
+    }
+  }
+  console.log();
+}</code></pre>
+    </section>
+
+    <!-- ── 05_rag.ts ──────────────────────────────────── -->
+    <section>
+        <h3>05_rag.ts</h3>
+        <pre class="line-numbers" style="max-height: 60vh"><code class="language-typescript">import { Chunk, chat, generateEmbedding, getCollection } from './utils.js';
+
+const query = process.argv[2];
+if (!query) {
+  console.error('Usage: npm run 05 -- "&lt;question&gt;"');
+  process.exit(1);
+}
+
+const { client, collection } = await getCollection&lt;Chunk&gt;(process.env.COLLECTION_NAME!);
+
+try {
+  const topK = Number(process.env.TOP_K) || 5;
+  const queryEmbedding = await generateEmbedding(query);
+
+  const chunks = await collection.aggregate&lt;Chunk&gt;([
+    {
+      $vectorSearch: {
+        index:         'vector_index',
+        path:          'embedding',
+        queryVector:   queryEmbedding,
+        numCandidates: topK * 10,
+        limit:         topK,
+      },
+    },
+    { $project: { _id: 0, contenu: 1, source: 1, chunkIndex: 1 } },
+  ]).toArray();
+
+  // Affichage des sources utilisées
+  console.log('\nSources :\n');
+  chunks.forEach((c, i) =&gt;
+    console.log(`  ${i + 1}. ${c.source}  (chunk #${c.chunkIndex})`)
+  );
+
+  // Construction du contexte et appel LLM
+  const context = chunks.map(c =&gt; c.contenu).join('\n\n---\n\n');
+  console.log('\nRéponse :\n');
+  await chat(query, context);
+} finally {
+  await client.close();
+}</code></pre>
+        <pre><code class="language-bash">npm run 05 -- "Quelles questions relatives au RGPD ont été posées les années précédentes ?"</code></pre>
+    </section>
+
+</section>

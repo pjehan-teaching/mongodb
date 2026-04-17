@@ -1,0 +1,77 @@
+.reveal {
+
+    /* ── Diagramme d'architecture RAG ────────────────── */
+    p.rag-phase-label {
+        font-size: .6em;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        opacity: .5;
+        margin-bottom: 4px;
+    }
+    .rag-flow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        justify-content: center;
+        margin: 6px 0 14px;
+        flex-wrap: wrap;
+    }
+    .rag-box {
+        background: #1e1e2e;
+        color: #cdd6f4;
+        padding: 7px 13px;
+        border-radius: 8px;
+        font-size: .68em;
+        font-weight: 500;
+        text-align: center;
+        min-width: 80px;
+        line-height: 1.4;
+        small {
+            display: block;
+            font-size: .8em;
+            opacity: .55;
+            font-weight: 400;
+        }
+    }
+    .rag-box-accent {
+        background: #2980b9;
+        color: #fff;
+    }
+    .rag-box-llm {
+        background: #8e44ad;
+        color: #fff;
+    }
+    .rag-box-out {
+        background: #27ae60;
+        color: #fff;
+    }
+    .rag-arrow {
+        font-size: 1.1em;
+        opacity: .4;
+        flex-shrink: 0;
+    }
+    .rag-divider {
+        border: none;
+        border-top: 1px dashed rgba(255,255,255,.15);
+        margin: 8px 0;
+    }
+
+    /* ── Structure du projet ─────────────────────────── */
+    .rag-tree {
+        font-family: monospace;
+        font-size: .7em;
+        line-height: 1.8;
+        background: #1e1e2e;
+        color: #cdd6f4;
+        border-radius: 8px;
+        padding: 14px 20px;
+        text-align: left;
+        display: inline-block;
+        .rag-tree-dir   { color: #89b4fa; }
+        .rag-tree-utils { color: #f9e2af; }
+        .rag-tree-step  { color: #a6e3a1; }
+        .rag-tree-cfg   { color: #fab387; }
+    }
+
+}
