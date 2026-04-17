@@ -523,14 +523,14 @@ try {
         <pre><code class="language-json">"scripts": {
   "01": "tsx src/01_embeddings.ts",
   "02": "tsx --env-file=.env src/02_insert.ts",
-  "03": "tsx --env-file=.env src/03_create_index.ts"
+  "03": "tsx --env-file=.env src/03_index.ts"
 }</code></pre>
     </section>
 
-    <!-- ── 03_create_index.ts ────────────────────────────── -->
+    <!-- ── 03_index.ts ────────────────────────────── -->
     <section>
-        <h3>03_create_index.ts</h3>
-        <pre><code class="language-typescript">import { Article, getCollection } from './utils.js';
+        <h3>03_index.ts</h3>
+        <pre style="height: 60vh"><code class="language-typescript">import { Article, getCollection } from './utils.js';
 
 const { client, collection } = await getCollection&lt;Article&gt;('articles');
 
@@ -558,6 +558,77 @@ try {
   await client.close();
 }</code></pre>
         <pre><code class="language-bash">npm run 03</code></pre>
+    </section>
+
+    <!-- ── Étape 4 : Recherche vectorielle ──────────────── -->
+    <section>
+        <h3>Étape 4 — Recherche vectorielle</h3>
+        <p>
+            L'étape finale consiste à interroger MongoDB avec un <strong>vecteur de requête</strong>
+            via l'opérateur d'agrégation <code>$vectorSearch</code>.
+        </p>
+        <p>
+            L'outil CLI accepte deux arguments : la <strong>requête</strong> en langage naturel
+            et, optionnellement, une <strong>catégorie</strong> pour affiner les résultats.
+        </p>
+        <pre><code class="language-json">"scripts": {
+  "01": "tsx src/01_embeddings.ts",
+  "02": "tsx --env-file=.env src/02_insert.ts",
+  "03": "tsx --env-file=.env src/03_index.ts",
+  "04": "tsx --env-file=.env src/04_search.ts"
+}</code></pre>
+        <pre><code class="language-bash">npm run 04 -- "recette de cuisine italienne"
+npm run 04 -- "sport et bien-être" sport</code></pre>
+    </section>
+
+    <!-- ── 04_search.ts ──────────────────────────────────── -->
+    <section>
+        <h3>04_search.ts</h3>
+        <pre class="line-numbers" style="height: 60vh"><code class="language-typescript">import { Article, generateEmbedding, getCollection } from './utils.js';
+
+const query     = process.argv[2];
+const categorie = process.argv[3]; // optionnel : filtre par catégorie
+
+if (!query) {
+  console.error('Usage: npm run 04 -- "&lt;requête&gt;" [&lt;catégorie&gt;]');
+  process.exit(1);
+}
+
+const { client, collection } = await getCollection&lt;Article&gt;('articles');
+
+try {
+  const queryEmbedding = await generateEmbedding(query);
+
+  const results = await collection.aggregate&lt;Article &amp; { score: number }&gt;([
+    {
+      $vectorSearch: {
+        index: 'vector_index',
+        path: 'embedding',
+        queryVector: queryEmbedding,
+        numCandidates: 50,
+        limit: 5,
+        ...(categorie ? { filter: { categorie } } : {}), // filtre optionnel
+      },
+    },
+    {
+      $project: {
+        _id: 0, titre: 1, categorie: 1, auteur: 1,
+        score: { $meta: 'vectorSearchScore' }, // score de similarité cosinus
+      },
+    },
+  ]).toArray();
+
+  const label = categorie ? ` (catégorie : ${categorie})` : '';
+  console.log(`\nRésultats pour "${query}"${label}:\n`);
+  results.forEach((r, i) => {
+    console.log(`${i + 1}. [${r.categorie}] ${r.titre} — ${r.auteur}`);
+    console.log(`   Score : ${r.score.toFixed(4)}\n`);
+  });
+} finally {
+  await client.close();
+}</code></pre>
+        <pre><code class="language-bash">npm run 04 -- "recette de cuisine italienne"
+npm run 04 -- "sport et bien-être" sport</code></pre>
     </section>
 
 </section>
