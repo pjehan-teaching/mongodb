@@ -196,10 +196,14 @@ npm install -D typescript tsx @types/node</code></pre>
   "name": "vector-search",
   "type": "module",
   "scripts": {
-    "01": "tsx src/01_embeddings.ts"
+    "01": "tsx src/01_embeddings.ts",
+    "02": "tsx --env-file=.env src/02_insert.ts",
+    "03": "tsx --env-file=.env src/03_index.ts",
+    "04": "tsx --env-file=.env src/04_search.ts"
   },
   "dependencies": {
-    "@huggingface/transformers": "^4.1.0"
+    "@huggingface/transformers": "^4.1.0",
+    "mongodb": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
@@ -405,13 +409,8 @@ MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/
 
 # MongoDB Atlas Local (Docker)
 MONGODB_URI=mongodb://127.0.0.1:27017/?directConnection=true</code></pre>
-        <p>Installer le driver MongoDB et ajouter le script :</p>
+        <p>Installer le driver MongoDB :</p>
         <pre><code class="language-bash">npm install mongodb</code></pre>
-        <p>Mettre à jour <code>package.json</code> :</p>
-        <pre><code class="language-json">"scripts": {
-  "01": "tsx src/01_embeddings.ts",
-  "02": "tsx --env-file=.env src/02_insert.ts"
-}</code></pre>
         <p><code>--env-file</code> charge le fichier <code>.env</code> nativement sans dépendance supplémentaire (Node.js &gt;= 20.6).</p>
     </section>
 
@@ -520,12 +519,6 @@ try {
             L'index vectoriel indique à MongoDB <strong>comment comparer les embeddings</strong>.
             Il doit être créé une seule fois avant de pouvoir effectuer des recherches.
         </p>
-        <p>Ajouter le script dans <code>package.json</code> :</p>
-        <pre><code class="language-json">"scripts": {
-  "01": "tsx src/01_embeddings.ts",
-  "02": "tsx --env-file=.env src/02_insert.ts",
-  "03": "tsx --env-file=.env src/03_index.ts"
-}</code></pre>
     </section>
 
     <!-- ── 03_index.ts ────────────────────────────── -->
@@ -572,12 +565,6 @@ try {
             L'outil CLI accepte deux arguments : la <strong>requête</strong> en langage naturel
             et, optionnellement, une <strong>catégorie</strong> pour affiner les résultats.
         </p>
-        <pre><code class="language-json">"scripts": {
-  "01": "tsx src/01_embeddings.ts",
-  "02": "tsx --env-file=.env src/02_insert.ts",
-  "03": "tsx --env-file=.env src/03_index.ts",
-  "04": "tsx --env-file=.env src/04_search.ts"
-}</code></pre>
         <pre><code class="language-bash">npm run 04 -- "recette de cuisine italienne"
 npm run 04 -- "sport et bien-être" sport</code></pre>
     </section>
