@@ -151,7 +151,7 @@
         <pre><code class="language-bash">> db.companies.aggregate([ { $group: { _id: { year: "$founded_year" }, nb_companies: { $sum: 1 } } }, { $sort: { nb_companies: 1 } } ])</code></pre>
         <footer>
             <a href="#" class="info">Le signe <strong>$</strong> permet d'effectuer un traitement sur un champ</a>
-            <a href="https://docs.mongodb.com/manual/reference/operator/aggregation-group" class="info" target="_blank">Group doit utiliser des accumulateurs</a>
+            <a href="https://www.mongodb.com/docs/manual/reference/mql/accumulators/" class="info" target="_blank">Group doit utiliser des accumulateurs</a>
         </footer>
     </section>
 
