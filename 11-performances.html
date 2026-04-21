@@ -99,6 +99,7 @@
             <div class="instructions-content">
                 <ol>
                     <li>Positionnez-vous sur la base de données "stock" et recherchez l'ensemble des Documents sur le marché "NASDAQ" pour l'entreprise Microsoft ("MSFT") sur le mois de janvier 2008</li>
+                    <!-- { exchange: "NASDAQ", stock_symbol: "MSFT", date: { $gte: '2008-01-01', $lt: '2008-02-01' } } -->
                     <li>Examinez le temps d'execution de cette requête en utilisant la fonction <code class="language-bash">.explain("executionStats")</code></li>
                     <li>Créez le ou les index nécessaires et vérifiez à nouveau le temps d'execution</li>
                     <li>Projetez uniquement les informations nécessaires et vérifiez à nouveau le temps d'execution (Covered Query)</li>
